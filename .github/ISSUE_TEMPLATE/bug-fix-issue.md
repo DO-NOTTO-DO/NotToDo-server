@@ -1,5 +1,5 @@
 ---
-name: Bug issue
+name: Bug&Fix issue
 about: 버그 해결 및 수정을 위한 이슈 템플릿입니다.
 title: 'fix: '
 labels: bug, fix
