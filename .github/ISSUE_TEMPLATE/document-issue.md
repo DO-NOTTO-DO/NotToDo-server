@@ -15,4 +15,4 @@ assignees: ''
 <!-- 해야 할 일을 적어 주세요. -->
 - [ ] 
 
-<!-- 그 외 필요한 Label, Assignees 추가하기! -->
+<!-- 그 외 필요한 Label, Assignees, Projects 추가하기! -->
