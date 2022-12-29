@@ -2,7 +2,7 @@
 name: API feature issue
 about: API 개발 feature 이슈 템플릿입니다.
 title: 'feat:  '
-labels: API, Feat
+labels: API
 assignees: ''
 
 ---

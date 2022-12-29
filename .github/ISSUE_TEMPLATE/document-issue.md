@@ -1,7 +1,7 @@
 ---
 name: Document issue
 about: 문서 작업을 위한 이슈 템플릿 입니다.
-title: ''
+title: 'docs: '
 labels: documentation
 assignees: ''
 

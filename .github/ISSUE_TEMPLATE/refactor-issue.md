@@ -1,8 +1,8 @@
 ---
-name: Bug issue
-about: 버그 해결 및 수정을 위한 이슈 템플릿입니다.
-title: 'fix: '
-labels: bug, fix
+name: Refactor issue
+about: 코드 리팩토링을 위한 이슈 템플릿 입니다.
+title: 'refactor: '
+labels: refactor
 assignees: ''
 
 ---

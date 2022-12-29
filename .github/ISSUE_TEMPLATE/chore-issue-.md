@@ -2,7 +2,7 @@
 name: 'Chore issue '
 about: Chore 이슈 템플릿입니다.
 title: 'chore: '
-labels: Chore
+labels: ''
 assignees: ''
 
 ---
