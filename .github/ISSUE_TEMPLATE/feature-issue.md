@@ -1,8 +1,8 @@
 ---
-name: API feature issue
-about: API 개발 feature 이슈 템플릿입니다.
-title: 'feat:  '
-labels: API, feat
+name: Feature issue
+about: API 개발을 제외한 기능개발 feature 이슈 템플릿 입니다.
+title: 'feat: '
+labels: feat
 assignees: ''
 
 ---
