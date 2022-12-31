@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model action {
+  id         Int      @id(map: "action_pk") @unique(map: "action_id_uindex") @default(autoincrement())
+  mission_id Int
+  name       String   @db.VarChar(500)
+  created_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  mission    mission  @relation(fields: [mission_id], references: [id], onDelete: Cascade, map: "action_mission_id_fk")
+}
+
+model mission {
+  id                Int        @id(map: "mission_pk") @unique(map: "mission_id_uindex") @default(autoincrement())
+  user_id           Int
+  situation_id      Int?
+  title             String     @db.VarChar(700)
+  completion_status String?    @db.VarChar(400)
+  action_date       DateTime   @db.Timestamp(6)
+  goal              String?    @db.VarChar(1000)
+  created_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  action            action[]
+  situation         situation? @relation(fields: [situation_id], references: [id], onDelete: Cascade, map: "mission_situation_id_fk")
+  user              user       @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "mission_user_id_fk")
+}
+
+model recommend_category {
+  id                Int                 @id(map: "recommend_category_pk") @unique(map: "recommend_category_id_uindex") @default(autoincrement())
+  name              String              @unique(map: "recommend_category_name_uindex") @db.VarChar(1000)
+  image             String?             @db.VarChar(500)
+  recommend_mission recommend_mission[]
+}
+
+model recommend_mission {
+  id                    Int                @id(map: "recommend_mission_pk") @default(autoincrement())
+  recommend_category_id Int
+  title                 String             @db.VarChar(1000)
+  recommend_action      recommend_action[]
+  recommend_category    recommend_category @relation(fields: [recommend_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "recommend_mission_recommend_category_id_fk")
+}
+
+model situation {
+  id         Int       @id(map: "situation_pk") @unique(map: "situation_id_uindex") @default(autoincrement())
+  name       String    @unique(map: "situation_name_uindex") @db.VarChar(500)
+  created_at DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  mission    mission[]
+}
+
+model user {
+  id          Int       @id(map: "user_pk") @unique(map: "user_id_uindex") @default(autoincrement())
+  email       String?   @db.VarChar(400)
+  social_id   String?   @unique(map: "User_social_id_key") @db.VarChar(500)
+  social_type String?   @db.VarChar(100)
+  name        String?   @db.VarChar(200)
+  image       String?   @db.VarChar(500)
+  fcm_token   String?   @db.VarChar(500)
+  created_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  mission     mission[]
+}
+
+model recommend_action {
+  id                   Int               @id(map: "recommend_action_pk") @unique(map: "recommend_action_id_uindex") @default(autoincrement())
+  recommend_mission_id Int
+  name                 String?           @db.VarChar(1000)
+  recommend_mission    recommend_mission @relation(fields: [recommend_mission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "recommend_action_recommend_mission_id_fk")
+}
