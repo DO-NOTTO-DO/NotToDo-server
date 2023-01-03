@@ -30,4 +30,7 @@ export default {
   // 서버 내 오류
   INTERNAL_SERVER_ERROR: '서버 내 오류',
   INVALID_PASSWORD: '잘못된 비밀번호입니다.',
+
+  //성공
+  SUCCEESS: '성공',
 };
