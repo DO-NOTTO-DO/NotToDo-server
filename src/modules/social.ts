@@ -1,8 +1,9 @@
 import axios from 'axios';
 const jwt = require('jsonwebtoken');
 
-const signKakaoUser = async (socialToken) => {
+const signKakaoUser = async (socialToken: string) => {
   try {
+    console.log(socialToken);
     const user = await axios({
       method: 'GET',
       url: 'https://kapi.kakao.com/v2/user/me',
@@ -10,6 +11,7 @@ const signKakaoUser = async (socialToken) => {
         Authorization: `Bearer ${socialToken}`,
       },
     });
+
     if (!user) {
       throw 401;
     }
