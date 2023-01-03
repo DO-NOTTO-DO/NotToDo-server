@@ -73,3 +73,8 @@ model recommend_action {
   name                 String?           @db.VarChar(1000)
   recommend_mission    recommend_mission @relation(fields: [recommend_mission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "recommend_action_recommend_mission_id_fk")
 }
+
+model recommend_situation {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(500)
+}
