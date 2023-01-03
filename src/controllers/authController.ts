@@ -4,11 +4,11 @@ import { fail, success } from '../constants/response';
 import { SignInDTO } from '../DTO/authDTO';
 import jwtHandler from '../modules/jwtHandler';
 import authService from '../service/authService';
-const social = require('../modules/social');
-
+import social from '../modules/social';
+import convertSnakeToCamel from '../modules/convertSnakeToCamel';
 /**
- *  @route GET /auth/login
- *  @desc Get Auth
+ *  @route POST /auth
+ *  @desc Post Auth
  *  @access Private
  */
 const signIn = async (req: Request, res: Response) => {
@@ -37,8 +37,8 @@ const signIn = async (req: Request, res: Response) => {
       user = await authService.createUser(data);
     }
     const jwtToken = jwtHandler.sign(user.id);
-
-    return res.status(statusCode.OK).send(success(statusCode.OK, message.SUCCEESS, user));
+    data = convertSnakeToCamel.keysToCamel({ ...user, accessToken: jwtToken });
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.LOGIN_USER_SUCCESS, data));
   } catch (error) {
     console.log(error);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
