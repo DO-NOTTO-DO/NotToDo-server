@@ -91,7 +91,7 @@ model recommend_situation {
 }
 
 model not_todo {
-  id      Int       @id(map: "not_todo_pk") @unique(map: "not_todo_id_uindex") @default(autoincrement())
-  title   String?   @db.VarChar(500)
-  mission mission[]
+  id       Int       @id(map: "not_todo_pk") @unique(map: "not_todo_id_uindex") @default(autoincrement())
+  title    String?   @db.VarChar(500)
+  missions mission[]
 }

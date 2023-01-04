@@ -33,9 +33,13 @@ export default {
   INTERNAL_SERVER_ERROR: '서버 내 오류',
   INVALID_PASSWORD: '잘못된 비밀번호입니다.',
 
-  //성공
+  // 성공
   SUCCEESS: '성공',
 
-  //추천
+  // 추천
   READ_CATEGORY_SUCCESS: '추천 카테고리 조회 성공',
+
+  // 낫투두
+  READ_DAILY_MISSION_SUCCESS: '일일 낫투두 조회 성공',
+  INVALID_DATE_TYPE: '올바르지 않은 날짜 형식입니다.'
 };
