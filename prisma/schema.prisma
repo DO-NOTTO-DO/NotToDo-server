@@ -88,3 +88,4 @@ model recommend_situation {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(500)
 }
+
