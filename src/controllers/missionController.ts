@@ -74,5 +74,6 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
 
 export default {
   getMissionCount,
-  getDailyMission
+  getDailyMission,
+  getWeeklyMissionCount,
 };
