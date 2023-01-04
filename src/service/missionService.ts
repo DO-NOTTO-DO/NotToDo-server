@@ -82,7 +82,44 @@ const getDailyMission = async (userId: number, date: string) => {
   return data;
 };
 
+const getWeeklyMissionCount = async (userId: number, date: string) => {
+  const startDate: Date = new Date(date);
+  const lastDate: Date = new Date(startDate);
+  lastDate.setDate(lastDate.getDate() + 7);
+  console.log(startDate, lastDate);
+  const count = await prisma.mission.groupBy({
+    by: ['action_date'],
+    where: {
+      user_id: userId,
+      action_date: {
+        gt: startDate,
+        lte: lastDate,
+      },
+    },
+    _count: {
+      action_date: true,
+    },
+    orderBy: {
+      action_date: 'asc',
+    },
+  });
+  
+  const data = await Promise.all(
+    count.map(async (x) => {
+      let date = moment(x.action_date).format('YYYY-MM-DD');
+      date = date.split('-').join('.');
+      const result = {
+        actionDate: date,
+        count: x._count.action_date,
+      };
+      return result;
+    }),
+  );
+  return data;
+}
+
 export default {
   getMissionCount,
   getDailyMission,
+  getWeeklyMissionCount,
 };
