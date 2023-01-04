@@ -20,13 +20,14 @@ model mission {
   id                Int        @id(map: "mission_pk") @unique(map: "mission_id_uindex") @default(autoincrement())
   user_id           Int
   situation_id      Int?
-  not_todo_id       String     @db.VarChar(700)
+  not_todo_id       Int
   completion_status String?    @db.VarChar(400)
   action_date       DateTime   @db.Date
   goal              String?    @db.VarChar(1000)
   created_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   actions           action[]
+  not_todo          not_todo   @relation(fields: [not_todo_id], references: [id], onDelete: Cascade, map: "mission_not_todo_id_fk")
   situation         situation? @relation(fields: [situation_id], references: [id], onDelete: Cascade, map: "mission_situation_id_fk")
   user              user       @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "mission_user_id_fk")
 }
@@ -90,6 +91,7 @@ model recommend_situation {
 }
 
 model not_todo {
-  id    Int     @id(map: "not_todo_pk") @unique(map: "not_todo_id_uindex") @default(autoincrement())
-  title String? @db.VarChar(500)
+  id      Int       @id(map: "not_todo_pk") @unique(map: "not_todo_id_uindex") @default(autoincrement())
+  title   String?   @db.VarChar(500)
+  mission mission[]
 }
