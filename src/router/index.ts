@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import authRouter from './authRouter';
 import environmentRouter from './environmentRouter';
 import missionRouter from './missionRouter';
