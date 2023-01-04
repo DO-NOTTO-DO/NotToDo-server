@@ -1,10 +1,10 @@
-import dayjs from 'dayjs';
 import { PrismaClient } from '@prisma/client';
+import { DailyMissionDTO } from '../DTO/missionDTO';
 const prisma = new PrismaClient();
 import convertSnakeToCamel from '../modules/convertSnakeToCamel';
 
 const getDailyMission = async (userId: number, date: string) => {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: {
       id: userId,
     },
@@ -13,35 +13,58 @@ const getDailyMission = async (userId: number, date: string) => {
     return null;
   }
 
-  const actionDate = dayjs(date);
+  if (date.length != 10) {
+    throw 400;
+  } else {
+    const dateStrings = date.split('-');
+    if (dateStrings[0].length != 4) {
+      throw 400;
+    } else if (dateStrings[1].length != 2) {
+      throw 400;
+    } else if (dateStrings[2].length != 2) {
+      throw 400;
+    }
+  }
 
+  const actionDate: Date = new Date(date);
+  console.log(actionDate);
   const dailyMissions = await prisma.mission.findMany({
     where: {
       user_id: userId,
-      action_date: actionDate.format(),
+      action_date: actionDate,
     },
-    include: {
-      action: true,
+    select: {
+      id: true,
+      title: true,
+      situation: {
+        select: {
+          name: true,
+        }
+      },
+      completion_status: true,
+      goal: true,
+      actions: {
+        select: {
+          name: true
+        }
+      }
     },
   });
 
-  console.log(dailyMissions);
-
-  // const data = await Promise.all(
-  //   timeTravelList.map(async (timeTravel) => {
-  //     const result: GetTimeTravelDto = {
-  //       timeTravelId: timeTravel._id,
-  //       title: timeTravel.title,
-  //       year: timeTravel.year,
-  //       month: timeTravel.month,
-  //       day: timeTravel.day,
-  //       writtenDate: timeTravel.writtenDate,
-  //       image: timeTravel.image,
-  //     };
-
-  //     return result;
-  //   }),
-  // );
+  const data = await Promise.all(
+    dailyMissions.map(async (dailyMission) => {
+      const result: DailyMissionDTO = {
+        id: dailyMission.id,
+        title: dailyMission.title,
+        situation: dailyMission.situation?.name,
+        completionStatus: dailyMission.completion_status!!,
+        goal: dailyMission.goal,
+        actions: dailyMission.actions
+      };
+      return result;
+    }),
+  );
+  return data;
 };
 
 export default {

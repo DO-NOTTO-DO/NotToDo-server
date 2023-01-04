@@ -21,8 +21,8 @@ model mission {
   user_id           Int
   situation_id      Int?
   title             String     @db.VarChar(700)
-  completion_status String?    @db.VarChar(400)
-  action_date       DateTime   @db.Timestamp(6)
+  completion_status String     @default("NOTYET") @db.VarChar(400)
+  action_date       DateTime   @db.Date
   goal              String?    @db.VarChar(1000)
   created_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
@@ -32,18 +32,18 @@ model mission {
 }
 
 model recommend_category {
-  id                Int                 @id(map: "recommend_category_pk") @unique(map: "recommend_category_id_uindex") @default(autoincrement())
-  name              String              @unique(map: "recommend_category_name_uindex") @db.VarChar(1000)
-  image             String?             @db.VarChar(500)
-  active_image      String?             @db.VarChar(500)
-  recommend_missions  recommend_mission[]
+  id                 Int                 @id(map: "recommend_category_pk") @unique(map: "recommend_category_id_uindex") @default(autoincrement())
+  name               String              @unique(map: "recommend_category_name_uindex") @db.VarChar(1000)
+  image              String?             @db.VarChar(500)
+  active_image       String?             @db.VarChar(500)
+  recommend_missions recommend_mission[]
 }
 
 model recommend_mission {
   id                    Int                @id(map: "recommend_mission_pk") @default(autoincrement())
   recommend_category_id Int
   title                 String             @db.VarChar(1000)
-  recommend_actions      recommend_action[]
+  recommend_actions     recommend_action[]
   recommend_category    recommend_category @relation(fields: [recommend_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "recommend_mission_recommend_category_id_fk")
 }
 
@@ -52,7 +52,7 @@ model situation {
   name       String    @unique(map: "situation_name_uindex") @db.VarChar(500)
   created_at DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  missions    mission[]
+  missions   mission[]
 }
 
 model user {
@@ -64,14 +64,14 @@ model user {
   image       String?     @db.VarChar(500)
   created_at  DateTime    @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at  DateTime    @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  fcm_tokens   fcm_token[]
-  missions     mission[]
+  fcm_tokens  fcm_token[]
+  missions    mission[]
 }
 
 model fcm_token {
   id         Int      @id(map: "fcm_token_pk") @unique(map: "fcm_token_id_uindex") @default(autoincrement())
   user_id    Int
-  token      String?  @unique(map: "fcm_token_token_key") @db.VarChar(500)
+  token      String?  @unique @db.VarChar(500)
   created_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fcm_token_user_id_fk")
@@ -88,4 +88,3 @@ model recommend_situation {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(500)
 }
-
