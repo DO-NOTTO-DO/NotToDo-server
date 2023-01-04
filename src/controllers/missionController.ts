@@ -16,7 +16,10 @@ const getDailyMission = async (req: Request, res: Response) => {
     const userId = req.body.userId;
     const actionDate = req.params.date;
     const data = await missionService.getDailyMission(userId, actionDate);
-    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_CATEGORY_SUCCESS, data));
+    if (data === 400) {
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_DATE_TYPE));
+    }
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_DAILY_MISSION_SUCCESS, data));
   } catch (error) {
     console.log(error);
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);

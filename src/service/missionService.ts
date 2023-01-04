@@ -13,6 +13,9 @@ const getDailyMission = async (userId: number, date: string) => {
     return null;
   }
 
+  if (isNaN(Date.parse(date))) {
+    return 400;
+  }
   if (date.length != 10) {
     throw 400;
   } else {
@@ -27,7 +30,6 @@ const getDailyMission = async (userId: number, date: string) => {
   }
 
   const actionDate: Date = new Date(date);
-  console.log(actionDate);
   const dailyMissions = await prisma.mission.findMany({
     where: {
       user_id: userId,
@@ -35,7 +37,11 @@ const getDailyMission = async (userId: number, date: string) => {
     },
     select: {
       id: true,
-      title: true,
+      not_todo: {
+        select: {
+          title: true,
+        }
+      },
       situation: {
         select: {
           name: true,
@@ -55,7 +61,7 @@ const getDailyMission = async (userId: number, date: string) => {
     dailyMissions.map(async (dailyMission) => {
       const result: DailyMissionDTO = {
         id: dailyMission.id,
-        title: dailyMission.title,
+        title: dailyMission.not_todo.title,
         situation: dailyMission.situation?.name,
         completionStatus: dailyMission.completion_status!!,
         goal: dailyMission.goal,

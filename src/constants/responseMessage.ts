@@ -40,5 +40,6 @@ export default {
   READ_CATEGORY_SUCCESS: '추천 카테고리 조회 성공',
 
   // 낫투두
-  READ_DAILY_MISSION_SUCCESS: '일일 낫투두'
+  READ_DAILY_MISSION_SUCCESS: '일일 낫투두 조회 성공',
+  INVALID_DATE_TYPE: '올바르지 않은 날짜 형식입니다.'
 };
