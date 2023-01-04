@@ -4,31 +4,6 @@ const prisma = new PrismaClient();
 import convertSnakeToCamel from '../modules/convertSnakeToCamel';
 
 const getDailyMission = async (userId: number, date: string) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      id: userId,
-    },
-  });
-  if (!user) {
-    return null;
-  }
-
-  if (isNaN(Date.parse(date))) {
-    return 400;
-  }
-  if (date.length != 10) {
-    throw 400;
-  } else {
-    const dateStrings = date.split('-');
-    if (dateStrings[0].length != 4) {
-      throw 400;
-    } else if (dateStrings[1].length != 2) {
-      throw 400;
-    } else if (dateStrings[2].length != 2) {
-      throw 400;
-    }
-  }
-
   const actionDate: Date = new Date(date);
   const dailyMissions = await prisma.mission.findMany({
     where: {
