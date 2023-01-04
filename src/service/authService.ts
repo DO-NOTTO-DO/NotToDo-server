@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import { statusCode } from '../constants';
-import { SignInDTO, UserCreateDTO } from '../DTO/authDTO';
+import { UserCreateDTO } from '../DTO/authDTO';
 const prisma = new PrismaClient();
+import convertSnakeToCamel from '../modules/convertSnakeToCamel';
 
 const findUserBySocialId = async (socialId: string) => {
   const user = await prisma.user.findFirst({
@@ -13,7 +12,7 @@ const findUserBySocialId = async (socialId: string) => {
   if (!user) {
     return null;
   }
-  return user;
+  return convertSnakeToCamel.keysToCamel(user);
 };
 
 const updateFcm = async (userId: number, fcmToken: string) => {
@@ -36,8 +35,7 @@ const createUser = async (userCreateDTO: UserCreateDTO) => {
       social_id: userCreateDTO.socialId,
     },
   });
-
-  return user;
+  return convertSnakeToCamel.keysToCamel(user);
 };
 
 export default {

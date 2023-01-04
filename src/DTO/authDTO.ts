@@ -1,7 +1,7 @@
 export interface SignInDTO {
   socialToken: string;
   socialType: string;
-  fcm: string;
+  fcmToken: string;
 }
 
 export interface UserCreateDTO {
