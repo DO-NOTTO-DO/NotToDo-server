@@ -20,6 +20,19 @@ const validateDate = async (date: string) => {
   }
 };
 
+const validateMonday = async (date: string) => {
+  try {
+    const startDate: Date = new Date(date);
+    const weekday = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    if (weekday[startDate.getDay()] != 'MON') {
+      throw 4001;
+    }
+  } catch (error) {
+    throw 4001;
+  }
+};
+
 export default {
   validateDate,
+  validateMonday,
 };
