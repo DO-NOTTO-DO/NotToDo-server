@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
 import { message, statusCode } from '../constants';
 import { fail, success } from '../constants/response';
-
 import { slackMessage } from '../modules/slackMessage';
 import { sendMessageToSlack } from '../modules/slackAPI';
-import { missionService } from '../service';
+import missionService from '../service/missionService';
 import dateValidator from '../modules/dateValidator';
+import moment from 'moment';
 
 /**
+ *  @route GET /mission/daily/:date
  *  @desc Get category
  *  @access Public
  */
-const getDailyMission = async (req: Request, res: Response) => {
+ const getDailyMission = async (req: Request, res: Response) => {
   try {
     const userId = req.body.userId;
     const actionDate = req.params.date;
@@ -26,13 +27,9 @@ const getDailyMission = async (req: Request, res: Response) => {
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
-};
+ };
 
-export default {
-  getDailyMission,
-};
 
-import moment from 'moment';
 const getMissionCount = async (req: Request, res: Response) => {
   const inputMonth: string = req.params.month;
   const userId: number = req.body.userId;
@@ -52,7 +49,8 @@ const getMissionCount = async (req: Request, res: Response) => {
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
 };
+
 export default {
   getMissionCount,
+  getDailyMission
 };
-
