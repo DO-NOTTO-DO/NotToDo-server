@@ -20,7 +20,7 @@ model mission {
   id                Int        @id(map: "mission_pk") @unique(map: "mission_id_uindex") @default(autoincrement())
   user_id           Int
   situation_id      Int?
-  title             String     @db.VarChar(700)
+  not_todo_id       String     @db.VarChar(700)
   completion_status String?    @db.VarChar(400)
   action_date       DateTime   @db.Date
   goal              String?    @db.VarChar(1000)
@@ -87,4 +87,9 @@ model recommend_action {
 model recommend_situation {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(500)
+}
+
+model not_todo {
+  id    Int     @id(map: "not_todo_pk") @unique(map: "not_todo_id_uindex") @default(autoincrement())
+  title String? @db.VarChar(500)
 }
