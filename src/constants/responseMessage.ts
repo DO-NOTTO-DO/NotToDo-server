@@ -38,4 +38,7 @@ export default {
 
   //추천
   READ_CATEGORY_SUCCESS: '추천 카테고리 조회 성공',
+
+  // 상황
+  SITUATIONS_GET_SUCCESS: '상황 불러오기 성공',
 };
