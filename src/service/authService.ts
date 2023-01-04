@@ -3,43 +3,37 @@ import { UserCreateDTO } from '../DTO/authDTO';
 const prisma = new PrismaClient();
 import convertSnakeToCamel from '../modules/convertSnakeToCamel';
 
-const findUserBySocialId = async (socialId: string) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      social_id: socialId,
-    },
-  });
-  if (!user) {
-    return null;
-  }
-  return convertSnakeToCamel.keysToCamel(user);
-};
-
-const updateFcm = async (userId: number, fcmToken: string) => {
-  const user = await prisma.user.update({
-    where: {
-      id: userId,
-    },
-    data: { fcm_token: fcmToken },
-  });
-  return user;
-};
-
 const createUser = async (userCreateDTO: UserCreateDTO) => {
-  const user = await prisma.user.create({
-    data: {
+  const user = await prisma.user.upsert({
+    where: {
+      social_id: userCreateDTO.socialId,
+    },
+    update: {},
+    create: {
       name: userCreateDTO.name,
       email: userCreateDTO.email,
       social_type: userCreateDTO.socialType,
-      fcm_token: userCreateDTO.fcmToken,
       social_id: userCreateDTO.socialId,
     },
   });
   return convertSnakeToCamel.keysToCamel(user);
 };
 
+const createFCM = async (userId: number, fcmToken: string) => {
+  const result = await prisma.fcm_token.upsert({
+    where: {
+      token: fcmToken,
+    },
+    update: {},
+    create: {
+      user_id: userId,
+      token: fcmToken,
+    },
+  });
+  return convertSnakeToCamel.keysToCamel(result);
+};
+
 export default {
   createUser,
-  findUserBySocialId,
-  updateFcm,
+  createFCM,
 };

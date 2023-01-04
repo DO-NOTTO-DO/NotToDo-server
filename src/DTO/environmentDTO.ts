@@ -4,3 +4,8 @@ export interface CategoryDTO {
   image: string;
   activeImage: string;
 }
+
+export interface CategoryDetailDTO {
+  title: string;
+  recommendAction: object[];
+}

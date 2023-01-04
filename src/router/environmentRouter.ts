@@ -6,5 +6,6 @@ const { validatorErrorChecker } = require('../middlewares/validator');
 const router: Router = Router();
 
 router.get('/category', environmentController.getCategory);
+router.get('/:categoryId', environmentController.getCategoryDetail);
 
 export default router;
