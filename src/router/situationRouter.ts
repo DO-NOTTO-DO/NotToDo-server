@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
 import situationController from '../controllers/situationController';
 import { auth } from '../middlewares';
 const router: Router = Router();
