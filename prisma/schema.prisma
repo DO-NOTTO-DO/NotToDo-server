@@ -56,7 +56,6 @@ model situation {
 }
 
 model user {
-
   id          Int         @id(map: "user_pk") @unique(map: "user_id_uindex") @default(autoincrement())
   email       String?     @db.VarChar(400)
   social_id   String?     @unique(map: "User_social_id_key") @db.VarChar(500)
@@ -70,12 +69,12 @@ model user {
 }
 
 model fcm_token {
-  id          Int       @id(map: "fcm_token_pk") @unique(map: "fcm_token_id_uindex") @default(autoincrement())
-  user_id     Int
-  token       String    @db.VarChar(500)
-  created_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  updated_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  user        user       @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fcm_token_user_id_fk")
+  id         Int      @id(map: "fcm_token_pk") @unique(map: "fcm_token_id_uindex") @default(autoincrement())
+  user_id    Int
+  token      String?  @unique(map: "fcm_token_token_key") @db.VarChar(500)
+  created_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fcm_token_user_id_fk")
 }
 
 model recommend_action {
