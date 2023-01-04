@@ -82,8 +82,12 @@ const getDailyMission = async (userId: number, date: string) => {
   return data;
 };
 
-const getWeeklyMissionCount = async (userId: number, startDate: string) => {
-  
+const getWeeklyMissionCount = async (userId: number, date: string) => {
+  const startDate: Date = new Date(date);
+  const weekday = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  if (weekday[startDate.getDay()] != 'MON') {
+    
+  }
 }
 
 export default {

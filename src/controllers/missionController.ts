@@ -60,6 +60,7 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
     const userId = req.body.userId;
     const startDate = req.params.startDate;
     await dateValidator.validateDate(startDate);
+    await dateValidator.validateMonday(startDate);
     const data = await missionService.getWeeklyMissionCount(userId, startDate);
     return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_WEEKLY_MISSION_COUNT_SUCCESS, data));
   } catch (error) {
