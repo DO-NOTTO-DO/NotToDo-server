@@ -35,6 +35,7 @@ model recommend_category {
   id                Int                 @id(map: "recommend_category_pk") @unique(map: "recommend_category_id_uindex") @default(autoincrement())
   name              String              @unique(map: "recommend_category_name_uindex") @db.VarChar(1000)
   image             String?             @db.VarChar(500)
+  active_image      String?             @db.VarChar(500)
   recommend_mission recommend_mission[]
 }
 
@@ -55,16 +56,17 @@ model situation {
 }
 
 model user {
-  id          Int       @id(map: "user_pk") @unique(map: "user_id_uindex") @default(autoincrement())
-  email       String?   @db.VarChar(400)
-  social_id   String?   @unique(map: "User_social_id_key") @db.VarChar(500)
-  social_type String?   @db.VarChar(100)
-  name        String?   @db.VarChar(200)
-  image       String?   @db.VarChar(500)
-  created_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  updated_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  mission     mission[]
+
+  id          Int         @id(map: "user_pk") @unique(map: "user_id_uindex") @default(autoincrement())
+  email       String?     @db.VarChar(400)
+  social_id   String?     @unique(map: "User_social_id_key") @db.VarChar(500)
+  social_type String?     @db.VarChar(100)
+  name        String?     @db.VarChar(200)
+  image       String?     @db.VarChar(500)
+  created_at  DateTime    @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at  DateTime    @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   fcm_token   fcm_token[]
+  mission     mission[]
 }
 
 model fcm_token {
@@ -86,4 +88,13 @@ model recommend_action {
 model recommend_situation {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(500)
+}
+
+model fcm_token {
+  id         Int      @id(map: "fcm_token_pk") @unique(map: "fcm_token_id_uindex") @default(autoincrement())
+  user_id    Int
+  token      String   @db.VarChar(500)
+  created_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at DateTime @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fcm_token_user_id_fk")
 }

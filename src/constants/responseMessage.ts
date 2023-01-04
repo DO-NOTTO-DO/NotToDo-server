@@ -35,4 +35,7 @@ export default {
 
   //성공
   SUCCEESS: '성공',
+
+  //추천
+  READ_CATEGORY_SUCCESS: '추천 카테고리 조회 성공',
 };
