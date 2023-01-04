@@ -48,6 +48,11 @@ const getDailyMission = async (userId: number, date: string) => {
   return data;
 };
 
+const getWeeklyMissionCount = async (userId: number, startDate: string) => {
+  
+}
+
 export default {
   getDailyMission,
+  getWeeklyMissionCount,
 };
