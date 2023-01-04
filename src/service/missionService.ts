@@ -103,7 +103,6 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
       action_date: 'asc',
     },
   });
-  console.log(count);
   
   const data = await Promise.all(
     count.map(async (x) => {
