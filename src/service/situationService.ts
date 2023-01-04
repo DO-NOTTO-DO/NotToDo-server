@@ -48,10 +48,10 @@ const getRecentSituations = async (userId: number): Promise<SituationDTO[]> => {
 const filterSituations = async (userId: number): Promise<SituationResponseDTO> => {
     const recommendSituations: SituationDTO[] = await getRecommendSituations();
     const recentSituations: SituationDTO[] = await getRecentSituations(userId);
-    const recentFilteredituations: SituationDTO[] = recentSituations.filter(item => !recommendSituations.map((item) => item.name).includes(item.name));
+    const recentFilteredSituations: SituationDTO[] = recentSituations.filter(item => !recommendSituations.map((item) => item.name).includes(item.name));
     const data: SituationResponseDTO = {
         recommends: recommendSituations,
-        recents: recentFilteredituations.slice(0, returnCount),
+        recents: recentFilteredSituations.slice(0, returnCount),
     }
     return data
 }
