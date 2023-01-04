@@ -15,7 +15,7 @@ const getCategoryDetail = async (categoryId: number): Promise<CategoryDetailDTO>
     },
     select: {
       title: true,
-      recommend_action: {
+      recommend_actions: {
         select: {
           name: true,
         },

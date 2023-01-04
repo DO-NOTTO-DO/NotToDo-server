@@ -26,7 +26,7 @@ model mission {
   goal              String?    @db.VarChar(1000)
   created_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at        DateTime   @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  action            action[]
+  actions           action[]
   situation         situation? @relation(fields: [situation_id], references: [id], onDelete: Cascade, map: "mission_situation_id_fk")
   user              user       @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "mission_user_id_fk")
 }
@@ -36,14 +36,14 @@ model recommend_category {
   name              String              @unique(map: "recommend_category_name_uindex") @db.VarChar(1000)
   image             String?             @db.VarChar(500)
   active_image      String?             @db.VarChar(500)
-  recommend_mission recommend_mission[]
+  recommend_missions  recommend_mission[]
 }
 
 model recommend_mission {
   id                    Int                @id(map: "recommend_mission_pk") @default(autoincrement())
   recommend_category_id Int
   title                 String             @db.VarChar(1000)
-  recommend_action      recommend_action[]
+  recommend_actions      recommend_action[]
   recommend_category    recommend_category @relation(fields: [recommend_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "recommend_mission_recommend_category_id_fk")
 }
 
@@ -52,7 +52,7 @@ model situation {
   name       String    @unique(map: "situation_name_uindex") @db.VarChar(500)
   created_at DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  mission    mission[]
+  missions    mission[]
 }
 
 model user {
@@ -64,8 +64,8 @@ model user {
   image       String?     @db.VarChar(500)
   created_at  DateTime    @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at  DateTime    @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
-  fcm_token   fcm_token[]
-  mission     mission[]
+  fcm_tokens   fcm_token[]
+  missions     mission[]
 }
 
 model fcm_token {
