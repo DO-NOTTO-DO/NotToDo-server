@@ -25,6 +25,8 @@ const getDailyMission = async (userId: number, date: string) => {
     },
   });
 
+  console.log(dailyMissions);
+
   // const data = await Promise.all(
   //   timeTravelList.map(async (timeTravel) => {
   //     const result: GetTimeTravelDto = {
