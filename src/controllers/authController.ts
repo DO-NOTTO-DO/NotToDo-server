@@ -17,7 +17,7 @@ const signIn = async (req: Request, res: Response) => {
   const signInDTO: SignInDTO = req.body;
 
   try {
-    let userData, data, user;
+    let userData, data;
     switch (signInDTO.socialType) {
       case 'kakao':
         userData = await social.signKakaoUser(signInDTO.socialToken);
@@ -25,19 +25,14 @@ const signIn = async (req: Request, res: Response) => {
           name: userData.kakao_account.profile.nickname,
           email: userData.kakao_account.email,
           socialType: signInDTO.socialType,
-          fcmToken: signInDTO.fcmToken,
           socialId: String(userData.id),
         };
         break;
     }
-    user = await authService.findUserBySocialId(data.socialId);
 
-    if (!user) {
-      user = await authService.createUser(data);
-    }
-    if (user.fcmToken != data.fcmToken) {
-      await authService.updateFcm(user.id, data.fcmToken);
-    }
+    const user = await authService.createUser(data);
+    const fcm = await authService.createFCM(user.id, signInDTO.fcmToken);
+
     const jwtToken = jwtHandler.sign(user.id);
     data = { ...user, accessToken: jwtToken };
     return res.status(statusCode.OK).send(success(statusCode.OK, message.LOGIN_USER_SUCCESS, data));
