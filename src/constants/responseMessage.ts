@@ -43,4 +43,5 @@ export default {
   READ_DAILY_MISSION_SUCCESS: '일일 낫투두 조회 성공',
   INVALID_DATE_TYPE: '올바르지 않은 날짜 형식입니다.',
   READ_WEEKLY_MISSION_COUNT_SUCCESS: '주간 낫투두 개수 조회 성공',
+  IS_NOT_MONDAY: '시작일은 월요일이어야합니다.',
 };

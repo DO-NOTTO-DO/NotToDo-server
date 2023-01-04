@@ -66,6 +66,8 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
   } catch (error) {
     if (error === 400) {
       res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_DATE_TYPE));
+    } else if (error == 4001) {
+      res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.IS_NOT_MONDAY));
     }
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
     sendMessageToSlack(errorMessage);

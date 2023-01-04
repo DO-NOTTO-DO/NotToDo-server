@@ -6,7 +6,7 @@ const { validatorErrorChecker } = require('../middlewares/validator');
 const router: Router = Router();
 
 router.get('/month/:month', auth, missionController.getMissionCount);
-router.get('/daily/:date', missionController.getDailyMission);
-router.get('/week/:startDate', missionController.getWeeklyMissionCount);
+router.get('/daily/:date', auth, missionController.getDailyMission);
+router.get('/week/:startDate', auth, missionController.getWeeklyMissionCount);
 
 export default router;
