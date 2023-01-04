@@ -5,7 +5,7 @@ import { SignInDTO } from '../DTO/authDTO';
 import jwtHandler from '../modules/jwtHandler';
 import authService from '../service/authService';
 import social from '../modules/social';
-import convertSnakeToCamel from '../modules/convertSnakeToCamel';
+
 /**
  *  @route POST /auth
  *  @desc Post Auth
