@@ -61,10 +61,19 @@ model user {
   social_type String?   @db.VarChar(100)
   name        String?   @db.VarChar(200)
   image       String?   @db.VarChar(500)
-  fcm_token   String?   @db.VarChar(500)
   created_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   updated_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
   mission     mission[]
+  fcm_token   fcm_token[]
+}
+
+model fcm_token {
+  id          Int       @id(map: "fcm_token_pk") @unique(map: "fcm_token_id_uindex") @default(autoincrement())
+  user_id     Int
+  token       String    @db.VarChar(500)
+  created_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  updated_at  DateTime  @default(dbgenerated("timezone('Asia/Seoul'::text, now())")) @db.Timestamp(6)
+  user        user       @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "fcm_token_user_id_fk")
 }
 
 model recommend_action {
