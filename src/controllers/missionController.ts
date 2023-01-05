@@ -6,6 +6,7 @@ import { sendMessageToSlack } from '../modules/slackAPI';
 import missionService from '../service/missionService';
 import dateValidator from '../modules/dateValidator';
 import moment from 'moment';
+import missionValidator from '../modules/missionValidator';
 
 /**
  *  @route GET /mission/daily/:date
@@ -66,8 +67,42 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
   } catch (error) {
     if (error === 400) {
       res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_DATE_TYPE));
+      return;
     } else if (error == 4001) {
       res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.IS_NOT_MONDAY));
+      return;
+    }
+    const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
+    sendMessageToSlack(errorMessage);
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+  }
+}
+
+/**
+ *  @route PATCH /mission/:missionId/check
+ *  @desc Patch mission status
+ *  @access Public
+ */
+const changeCompletionStatus = async (req: Request, res: Response) => {
+  try {
+    const userId = req.body.userId;
+    await missionValidator.validateMissionId(req.params.missionId);
+    const missionId = Number(req.params.missionId);
+    await missionValidator.validateUsersMission(userId, missionId);
+    const completionStatus = req.body.completionStatus;
+    await missionValidator.validateCompletionStatus(completionStatus);
+    const data = await missionService.changeCompletionStatus(missionId, completionStatus);
+    return res.status(statusCode.CREATED).send(success(statusCode.CREATED, message.CHANGE_COMPLETION_STATUS_SUCCESS, data));
+  } catch (error) {
+    if (error === 400) {
+      res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_MISSION_ID));
+      return;
+    } else if (error == 4001) {
+      res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.NOT_USERS_MISSION));
+      return;
+    } else if (error === 4002) {
+      res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_COMPLETION_STATUS_TYPE));
+      return;
     }
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
     sendMessageToSlack(errorMessage);
@@ -79,4 +114,5 @@ export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
+  changeCompletionStatus,
 };

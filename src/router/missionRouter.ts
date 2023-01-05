@@ -8,5 +8,6 @@ const router: Router = Router();
 router.get('/month/:month', auth, missionController.getMissionCount);
 router.get('/daily/:date', auth, missionController.getDailyMission);
 router.get('/week/:startDate', auth, missionController.getWeeklyMissionCount);
+router.get('/:missionId/check', auth, missionController.changeCompletionStatus);
 
 export default router;
