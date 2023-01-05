@@ -6,6 +6,9 @@ const returnCount = 9;
 
 const getRecommendSituations = async (): Promise<SituationDTO[]> => {
   const data: SituationDTO[] = await prisma.recommend_situation.findMany({
+    select: {
+      name: true,
+    },
     take: returnCount,
   });
   return data;
@@ -32,12 +35,14 @@ const getRecentSituations = async (userId: number): Promise<SituationDTO[]> => {
 
   data = data.filter((item) => item.situation);
 
-  return data.map((item) => {
-    const responseData: SituationDTO = {
-      name: item.situation?.name,
-    };
-    return responseData;
-  });
+  return await Promise.all(
+    data.map(async (item) => {
+      const responseData: SituationDTO = {
+        name: item.situation?.name,
+      };
+      return responseData;
+    }),
+  );
 };
 
 const filterSituations = async (userId: number): Promise<SituationResponseDTO> => {
