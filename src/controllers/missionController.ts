@@ -110,9 +110,28 @@ const changeCompletionStatus = async (req: Request, res: Response) => {
   }
 }
 
+/**
+ *  @route DELETE /mission/:missionId
+ *  @desc Delete mission
+ *  @access Public
+ */
+const deleteMission = async (req: Request, res: Response) => {
+  try {
+    const userId = req.body.userId;
+    await missionValidator.validateMissionId(req.params.missionId);
+    const missionId = Number(req.params.missionId);
+    await missionValidator.validateUsersMission(userId, missionId);
+  } catch (error) {
+    const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
+    sendMessageToSlack(errorMessage);
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+  }
+};
+
 export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
   changeCompletionStatus,
+  deleteMission,
 };
