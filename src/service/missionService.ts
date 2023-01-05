@@ -200,12 +200,12 @@ const getSituationStat = async (userId: number) => {
   const situation: SituationStatDTO[] = await prisma.$queryRaw(
     Prisma.sql`
     SELECT situation.id, count(situation_id), name
-      FROM mission, situation
-      WHERE user_id = ${userId} AND mission.situation_id = situation.id
-      AND action_date > ${startDate} AND action_date <= ${lastDate}
-      AND (completion_status = 'FINISH' OR completion_status = 'AMBIGUOUS')
-      GROUP BY situation.id
-      LIMIT 5
+    FROM mission, situation
+    WHERE user_id = ${userId} AND mission.situation_id = situation.id
+    AND action_date > ${startDate} AND action_date <= ${lastDate}
+    AND (completion_status = 'FINISH' OR completion_status = 'AMBIGUOUS')
+    GROUP BY situation.id
+    LIMIT 5
     `,
   );
   const situations: SituationStatDTO[] = [];
