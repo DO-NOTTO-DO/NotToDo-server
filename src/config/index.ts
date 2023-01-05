@@ -15,4 +15,8 @@ export default {
    * slack webhook
    */
   webhook: process.env.WEBHOOK_URL as string,
+  /**
+   * mongodb
+   */
+  mongoURI: process.env.MONGODB_URI as string,
 };
