@@ -37,9 +37,8 @@ const getMissionCount = async (req: Request, res: Response) => {
     const months = inputMonth.split('-');
     const year = Number(months[0]);
     const month = Number(months[1]);
-    const startDate = new Date(year, month - 1, 0);
-    const lastDate = new Date(year, month, 0);
-
+    const startDate = new Date(year, month - 1, 1);
+    const lastDate = new Date(year, month, 1);
     const mission = await missionService.getMissionCount(userId, startDate, lastDate);
     return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_MISSION_COUNT_SUCCESS, mission));
   } catch (error) {
