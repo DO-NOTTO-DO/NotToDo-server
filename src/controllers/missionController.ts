@@ -40,7 +40,7 @@ const getMissionCount = async (req: Request, res: Response) => {
     const lastDate = new Date(year, month, 0);
 
     const mission = await missionService.getMissionCount(userId, startDate, lastDate);
-    return res.status(statusCode.OK).send(success(statusCode.OK, message.SUCCEESS, mission));
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_MISSION_COUNT_SUCCESS, mission));
   } catch (error) {
     console.log(error);
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
@@ -78,7 +78,7 @@ const getStatNotTodo = async (req: Request, res: Response) => {
   const userId: number = req.body.userId;
   try {
     const notTodo = await missionService.getStatNotTodo(userId);
-    return res.status(statusCode.OK).send(success(statusCode.OK, message.SUCCEESS, notTodo));
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_NOTTODO_STAT_SUCCESS, notTodo));
   } catch (error) {
     console.log(error);
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);

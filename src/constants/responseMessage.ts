@@ -34,7 +34,7 @@ export default {
   INVALID_PASSWORD: '잘못된 비밀번호입니다.',
 
   // 성공
-  SUCCEESS: '성공',
+  SUCCESS: '성공',
 
   // 추천
   READ_CATEGORY_SUCCESS: '추천 카테고리 조회 성공',
@@ -44,4 +44,9 @@ export default {
   INVALID_DATE_TYPE: '올바르지 않은 날짜 형식입니다.',
   READ_WEEKLY_MISSION_COUNT_SUCCESS: '주간 낫투두 개수 조회 성공',
   IS_NOT_MONDAY: '시작일은 월요일이어야합니다.',
+  READ_MISSION_COUNT_SUCCESS: '월별 낫투두 개수 조회 성공',
+
+  //통계
+  READ_NOTTODO_STAT_SUCCESS: '낫투두별 통계 조회 성공',
+  READ_SITUATION_STAT_SUCCESS: '상황별 통계 조회 성공',
 };
