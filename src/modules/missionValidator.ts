@@ -1,15 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const validateMissionId = async (inputMissionId: string): Promise<number> => {
+const validateMissionId = async (inputMissionId: string) => {
   try {
     const missionId = Number(inputMissionId);
-    await prisma.mission.findUniqueOrThrow({
-      where: {
-        id: missionId,
-      },
-    });
-    return missionId;
+    if (isNaN(missionId)) {
+      throw 400;
+    }
   } catch (error) {
     return 400;
   }
@@ -28,7 +25,18 @@ const validateUsersMission = async (userId: number, missionId: number) => {
   }
 };
 
+const validateCompletionStatus = async (completionStatus: string) => {
+  try {
+    if (completionStatus !== 'FINISH' && completionStatus !== 'AMBIGUOUS' && completionStatus !== 'NOTYET') {
+      throw 4002;
+    }
+  } catch (error) {
+    throw 4002;
+  }
+}
+
 export default {
   validateMissionId,
   validateUsersMission,
+  validateCompletionStatus,
 }
