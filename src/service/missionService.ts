@@ -192,11 +192,18 @@ const deleteMission = async (missionId: number) => {
 };
 
 const getSituationStat = async (userId: number) => {
+  const date = new Date();
+  const currentYear = date.getFullYear();
+  const startDate = new Date(currentYear, 0, 1);
+  const lastDate = new Date(currentYear, 12, 1);
+
   const situation: SituationStatDTO[] = await prisma.$queryRaw(
     Prisma.sql`
     SELECT situation.id, count(situation_id), name
       FROM mission, situation
       WHERE user_id = ${userId} AND mission.situation_id = situation.id
+      AND action_date > ${startDate} AND action_date <= ${lastDate}
+      AND (completion_status = 'FINISH' OR completion_status = 'AMBIGUOUS')
       GROUP BY situation.id
       LIMIT 5
     `,
@@ -216,6 +223,8 @@ const getSituationStat = async (userId: number) => {
         SELECT not_todo.id, count(not_todo_id), title
         FROM mission, not_todo
         WHERE user_id = ${userId} AND situation_id = ${x.id} AND mission.not_todo_id = not_todo.id
+        AND action_date > ${startDate} AND action_date <= ${lastDate}
+        AND (completion_status = 'FINISH' OR completion_status = 'AMBIGUOUS')
         GROUP BY not_todo.id
         LIMIT 3
         `,
