@@ -134,9 +134,18 @@ const changeCompletionStatus = async (missionId: number, completionStatus: strin
   return convertSnakeToCamel.keysToCamel(mission);
 }
 
+const deleteMission = async (missionId: number) => {
+  await prisma.mission.delete({
+    where: {
+      id: missionId
+    }
+  });
+}
+
 export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
   changeCompletionStatus,
+  deleteMission,
 };
