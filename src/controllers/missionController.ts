@@ -147,7 +147,7 @@ const getSituationStat = async (req: Request, res: Response) => {
   const userId: number = req.body.userId;
   try {
     const notTodo = await missionService.getSituationStat(userId);
-    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_NOTTODO_STAT_SUCCESS, notTodo));
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_SITUATION_STAT_SUCCESS, notTodo));
   } catch (error) {
     console.log(error);
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
