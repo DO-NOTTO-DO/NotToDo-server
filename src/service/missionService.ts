@@ -90,9 +90,12 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
     by: ['action_date'],
     where: {
       user_id: userId,
+      completion_status: {
+        not: 'NOTYET',
+      },
       action_date: {
-        gt: startDate,
-        lte: lastDate,
+        gte: startDate,
+        lt: lastDate,
       },
     },
     _count: {
