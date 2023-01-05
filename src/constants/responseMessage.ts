@@ -34,7 +34,7 @@ export default {
   INVALID_PASSWORD: '잘못된 비밀번호입니다.',
 
   // 성공
-  SUCCEESS: '성공',
+  SUCCESS: '성공',
 
   // 추천
   READ_CATEGORY_SUCCESS: '추천 카테고리 조회 성공',
@@ -44,12 +44,18 @@ export default {
   INVALID_DATE_TYPE: '올바르지 않은 날짜 형식입니다.',
   READ_WEEKLY_MISSION_COUNT_SUCCESS: '주간 낫투두 개수 조회 성공',
   IS_NOT_MONDAY: '시작일은 월요일이어야합니다.',
+  READ_MISSION_COUNT_SUCCESS: '월별 낫투두 개수 조회 성공',
   INVALID_MISSION_ID: '올바르지 않은 id입니다.',
   NOT_USERS_MISSION: '로그인한 유저의 낫투두가 아닙니다.',
   INVALID_COMPLETION_STATUS_TYPE: '완료 여부는 NOTYET, AMBIGUOUS, FINISH로만 가능합니다.',
   CHANGE_COMPLETION_STATUS_SUCCESS: '낫투두 완료 여부 변경 성공',
-  DELETE_MISSION_SUCCESS: '낫투두 삭제 성공',
+  DELETE_MISSION_SUCCESS: '낫투두 삭제 성공'
+  
+  //통계
+  READ_NOTTODO_STAT_SUCCESS: '낫투두별 통계 조회 성공',
+  READ_SITUATION_STAT_SUCCESS: '상황별 통계 조회 성공',
 
   // 상황
   SITUATIONS_GET_SUCCESS: '상황 불러오기 성공',
+
 };

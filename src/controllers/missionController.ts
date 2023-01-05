@@ -13,7 +13,7 @@ import missionValidator from '../modules/missionValidator';
  *  @desc Get daily mission
  *  @access Public
  */
- const getDailyMission = async (req: Request, res: Response) => {
+const getDailyMission = async (req: Request, res: Response) => {
   try {
     const userId = req.body.userId;
     const actionDate = req.params.date;
@@ -28,8 +28,7 @@ import missionValidator from '../modules/missionValidator';
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
- };
-
+};
 
 const getMissionCount = async (req: Request, res: Response) => {
   const inputMonth: string = req.params.month;
@@ -42,9 +41,8 @@ const getMissionCount = async (req: Request, res: Response) => {
     const lastDate = new Date(year, month, 0);
 
     const mission = await missionService.getMissionCount(userId, startDate, lastDate);
-    return res.status(statusCode.OK).send(success(statusCode.OK, message.SUCCEESS, mission));
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_MISSION_COUNT_SUCCESS, mission));
   } catch (error) {
-    console.log(error);
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
@@ -76,7 +74,7 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
-}
+};
 
 /**
  *  @route PATCH /mission/:missionId/check
@@ -131,6 +129,13 @@ const deleteMission = async (req: Request, res: Response) => {
       res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.NOT_USERS_MISSION));
       return;
     }
+
+const getStatNotTodo = async (req: Request, res: Response) => {
+  const userId: number = req.body.userId;
+  try {
+    const notTodo = await missionService.getStatNotTodo(userId);
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_NOTTODO_STAT_SUCCESS, notTodo));
+  } catch (error) {
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
@@ -141,6 +146,7 @@ export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
+  getStatNotTodo,
   changeCompletionStatus,
   deleteMission,
 };
