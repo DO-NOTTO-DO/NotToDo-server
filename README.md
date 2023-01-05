@@ -1,5 +1,8 @@
 # NotToDo-server
-낫투두 서버
+
+<img width="922" alt="스크린샷 2023-01-05 오전 3 57 26" src="https://user-images.githubusercontent.com/91375028/210629137-6c7e42e7-fad5-4b8e-b5ce-e4bd3ed108d1.png">
+
+
 
 ## 설계한 DB의 ERD
 
