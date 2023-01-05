@@ -106,7 +106,7 @@ const changeCompletionStatus = async (req: Request, res: Response) => {
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
-}
+};
 
 /**
  *  @route DELETE /mission/:missionId
@@ -129,6 +129,8 @@ const deleteMission = async (req: Request, res: Response) => {
       res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.NOT_USERS_MISSION));
       return;
     }
+  }
+};
 
 const getStatNotTodo = async (req: Request, res: Response) => {
   const userId: number = req.body.userId;
