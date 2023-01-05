@@ -9,4 +9,6 @@ router.get('/month/:month', auth, missionController.getMissionCount);
 router.get('/daily/:date', auth, missionController.getDailyMission);
 router.get('/week/:startDate', auth, missionController.getWeeklyMissionCount);
 
+router.post('/', auth, missionController.postMission);
+
 export default router;

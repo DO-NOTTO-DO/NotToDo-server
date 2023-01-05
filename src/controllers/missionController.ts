@@ -74,9 +74,33 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
 }
+/**
+ *  @route POST / mission
+ *  @desc Post mission
+ *  @access Public
+ */
+const postMission = async (req: Request, res: Response) => {
+  try {
+    const userId = req.body.userId as number;
+    const data = await missionService.createMission(userId, req.body);
+    return res.status(statusCode.CREATED).send(success(statusCode.CREATED, message.CREATE_MISSION_SUCCESS, data));
+  } catch (error) {
+    if (error == 4001) {
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+    } else if (error == 4002) {
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_MISSION));
+    } else if (error == 4003) {
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.LIMITED_MISSION_COUNT));
+    }
+    const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
+    sendMessageToSlack(errorMessage);
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+  }
+};
 
 export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
+  postMission,
 };

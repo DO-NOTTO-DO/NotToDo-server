@@ -44,4 +44,8 @@ export default {
   INVALID_DATE_TYPE: '올바르지 않은 날짜 형식입니다.',
   READ_WEEKLY_MISSION_COUNT_SUCCESS: '주간 낫투두 개수 조회 성공',
   IS_NOT_MONDAY: '시작일은 월요일이어야합니다.',
+
+  CREATE_MISSION_SUCCESS: '낫투두 생성 성공',
+  ALREADY_MISSION: '이미 존재하는 낫투두 입니다.',
+  LIMITED_MISSION_COUNT: '낫투두를 3개 이상 추가할 수 없습니다.',
 };
