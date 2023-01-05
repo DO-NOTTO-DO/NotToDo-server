@@ -147,3 +147,4 @@ yarn.lock
 
 .env
 .DS_Store
+nottodo-firebase-admin.json

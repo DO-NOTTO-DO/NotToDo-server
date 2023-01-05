@@ -86,7 +86,6 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
   const startDate: Date = new Date(date);
   const lastDate: Date = new Date(startDate);
   lastDate.setDate(lastDate.getDate() + 7);
-  console.log(startDate, lastDate);
   const count = await prisma.mission.groupBy({
     by: ['action_date'],
     where: {
@@ -153,9 +152,36 @@ const getStatNotTodo = async (userId: number) => {
   return convertSnakeToCamel.keysToCamel(result);
 };
 
+const changeCompletionStatus = async (missionId: number, completionStatus: string) => {
+  const mission = await prisma.mission.update({
+    where: {
+      id: missionId,
+    },
+    data: {
+      completion_status: completionStatus,
+    },
+    select: {
+      id: true,
+      completion_status: true,
+    }
+  });
+
+  return convertSnakeToCamel.keysToCamel(mission);
+}
+
+const deleteMission = async (missionId: number) => {
+  await prisma.mission.delete({
+    where: {
+      id: missionId
+    }
+  });
+}
+
 export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
   getStatNotTodo,
+  changeCompletionStatus,
+  deleteMission,
 };
