@@ -119,13 +119,26 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
 };
 
 const getNotTodoStat = async (userId: number) => {
+  const date = new Date();
+  const currentYear = date.getFullYear();
+  const startDate = new Date(currentYear, 0, 1);
+  const lastDate = new Date(currentYear, 12, 1);
+
   const notTodo = await prisma.mission.groupBy({
     where: {
       user_id: userId,
+      action_date: {
+        gt: startDate,
+        lte: lastDate,
+      },
+      OR: [{ completion_status: 'FINISH' }, { completion_status: 'AMBIGUOUS' }],
     },
     by: ['not_todo_id'],
     _count: {
       not_todo_id: true,
+    },
+    orderBy: {
+      _count: { not_todo_id: 'desc' },
     },
   });
 
