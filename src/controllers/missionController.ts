@@ -12,7 +12,7 @@ import moment from 'moment';
  *  @desc Get daily mission
  *  @access Public
  */
- const getDailyMission = async (req: Request, res: Response) => {
+const getDailyMission = async (req: Request, res: Response) => {
   try {
     const userId = req.body.userId;
     const actionDate = req.params.date;
@@ -27,8 +27,7 @@ import moment from 'moment';
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
- };
-
+};
 
 const getMissionCount = async (req: Request, res: Response) => {
   const inputMonth: string = req.params.month;
@@ -73,10 +72,23 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
-}
+};
 
+const getStatNotTodo = async (req: Request, res: Response) => {
+  const userId: number = req.body.userId;
+  try {
+    const notTodo = await missionService.getStatNotTodo(userId);
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.SUCCEESS, notTodo));
+  } catch (error) {
+    console.log(error);
+    const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
+    sendMessageToSlack(errorMessage);
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+  }
+};
 export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
+  getStatNotTodo,
 };
