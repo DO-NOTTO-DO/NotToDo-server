@@ -49,20 +49,20 @@ const getDailyMission = async (userId: number, date: string) => {
       not_todo: {
         select: {
           title: true,
-        }
+        },
       },
       situation: {
         select: {
           name: true,
-        }
+        },
       },
       completion_status: true,
       goal: true,
       actions: {
         select: {
-          name: true
-        }
-      }
+          name: true,
+        },
+      },
     },
   });
 
@@ -74,7 +74,7 @@ const getDailyMission = async (userId: number, date: string) => {
         situation: dailyMission.situation?.name,
         completionStatus: dailyMission.completion_status!!,
         goal: dailyMission.goal,
-        actions: dailyMission.actions
+        actions: dailyMission.actions,
       };
       return result;
     }),
@@ -103,7 +103,7 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
       action_date: 'asc',
     },
   });
-  
+
   const data = await Promise.all(
     count.map(async (x) => {
       let date = moment(x.action_date).format('YYYY-MM-DD');
@@ -116,10 +116,46 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
     }),
   );
   return data;
-}
+};
+
+const getStatNotTodo = async (userId: number) => {
+  const notTodo = await prisma.mission.groupBy({
+    where: {
+      user_id: userId,
+    },
+    by: ['not_todo_id'],
+    _count: {
+      not_todo_id: true,
+    },
+  });
+
+  const result = await Promise.all(
+    notTodo.map(async (x) => {
+      const notTodoId = x.not_todo_id;
+
+      const notTodo = await prisma.not_todo.findFirst({
+        where: {
+          id: notTodoId,
+        },
+        select: {
+          title: true,
+        },
+      });
+
+      const data = {
+        count: x._count.not_todo_id,
+        title: notTodo?.title,
+      };
+
+      return data;
+    }),
+  );
+  return convertSnakeToCamel.keysToCamel(result);
+};
 
 export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
+  getStatNotTodo,
 };
