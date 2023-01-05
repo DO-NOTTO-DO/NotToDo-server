@@ -1,8 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { DailyMissionDTO } from '../DTO/missionDTO';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { DailyMissionDTO, NotTodoStatDTO, SituationStatDTO } from '../DTO/missionDTO';
 const prisma = new PrismaClient();
 import convertSnakeToCamel from '../modules/convertSnakeToCamel';
 import moment from 'moment';
+import { slackMessage } from '../modules/slackMessage';
 
 const getMissionCount = async (userId: number, startDate: Date, lastDate: Date) => {
   const count = await prisma.mission.groupBy({
@@ -117,7 +118,7 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
   return data;
 };
 
-const getStatNotTodo = async (userId: number) => {
+const getNotTodoStat = async (userId: number) => {
   const notTodo = await prisma.mission.groupBy({
     where: {
       user_id: userId,
@@ -163,25 +164,73 @@ const changeCompletionStatus = async (missionId: number, completionStatus: strin
     select: {
       id: true,
       completion_status: true,
-    }
+    },
   });
 
   return convertSnakeToCamel.keysToCamel(mission);
-}
+};
 
 const deleteMission = async (missionId: number) => {
   await prisma.mission.delete({
     where: {
-      id: missionId
-    }
+      id: missionId,
+    },
   });
-}
+};
+
+const getSituationStat = async (userId: number) => {
+  const situation: SituationStatDTO[] = await prisma.$queryRaw(
+    Prisma.sql`
+    SELECT situation.id, count(situation_id), name
+      FROM mission, situation
+      WHERE user_id = ${userId} AND mission.situation_id = situation.id
+      GROUP BY situation.id
+      LIMIT 5
+    `,
+  );
+  const situations: SituationStatDTO[] = [];
+
+  const result = await Promise.all(
+    situation.map(async (x) => {
+      const data = {
+        id: x.id,
+        count: +String(x.count).replace('n', ''),
+        name: x.name,
+      };
+
+      const notTodo: NotTodoStatDTO[] = await prisma.$queryRaw(
+        Prisma.sql`
+        SELECT not_todo.id, count(not_todo_id), title
+        FROM mission, not_todo
+        WHERE user_id = ${userId} AND situation_id = ${x.id} AND mission.not_todo_id = not_todo.id
+        GROUP BY not_todo.id
+        LIMIT 3
+        `,
+      );
+      const notTodos: NotTodoStatDTO[] = [];
+
+      for (const y of notTodo) {
+        const notTododata = {
+          id: y.id,
+          count: +String(y.count).replace('n', ''),
+          title: y.title,
+        };
+        notTodos.push(notTododata);
+      }
+      const missions = notTodos.sort((a, b) => Number(b.count) - Number(a.count));
+      situations.push({ ...data, missions });
+    }),
+  );
+  const data = situations.sort((a, b) => Number(b.count) - Number(a.count));
+  return convertSnakeToCamel.keysToCamel(data);
+};
 
 export default {
   getMissionCount,
   getDailyMission,
   getWeeklyMissionCount,
-  getStatNotTodo,
+  getNotTodoStat,
+  getSituationStat,
   changeCompletionStatus,
   deleteMission,
 };
