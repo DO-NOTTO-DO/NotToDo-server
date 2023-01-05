@@ -6,6 +6,7 @@ import { sendMessageToSlack } from '../modules/slackAPI';
 import missionService from '../service/missionService';
 import dateValidator from '../modules/dateValidator';
 import moment from 'moment';
+import { MissionCreateDTO } from '../DTO/missionDTO';
 
 /**
  *  @route GET /mission/daily/:date
@@ -82,6 +83,10 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
 const postMission = async (req: Request, res: Response) => {
   try {
     const userId = req.body.userId as number;
+    const requestData = req.body as MissionCreateDTO
+    if (!requestData.title) {
+      throw 4001
+    }
     const data = await missionService.createMission(userId, req.body);
     return res.status(statusCode.CREATED).send(success(statusCode.CREATED, message.CREATE_MISSION_SUCCESS, data));
   } catch (error) {
