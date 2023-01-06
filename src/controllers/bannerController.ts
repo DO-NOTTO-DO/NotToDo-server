@@ -15,7 +15,7 @@ import dateValidator from '../modules/dateValidator';
 const getBanner = async (req: Request, res: Response) => {
   const userId = req.body.userId;
   try {
-    const date = req.params.startDate;
+    const date = req.body.date;
     await dateValidator.validateDate(date);
     const data = await bannerService.getBanner(userId, date);
     return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_BANNER_SUCCESS, data));
