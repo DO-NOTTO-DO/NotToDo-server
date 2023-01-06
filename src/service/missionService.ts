@@ -333,7 +333,7 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
     data: newMissions,
   });
 
-  return data;
+  return newdates;
 };
 
 export default {
