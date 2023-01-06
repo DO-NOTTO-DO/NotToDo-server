@@ -52,10 +52,9 @@ export default {
   DELETE_MISSION_SUCCESS: '낫투두 삭제 성공',
   RECENT_MISSION_SUCCESS: '최근 사용 낫투두 기록 불러오기 성공',
   COPY_OTHERDATES_MISSION_SUCCESS: '낫투두 다른 날짜에 추가 성공',
-  MISSION_NOT_FOUNDED: '해당 낫투두가 존재하지 않습니다.',
+  MISSION_NOT_FOUND: '해당 낫투두가 존재하지 않습니다.',
   EMPTY_MISSION_ID: '필요한 값(id)이 없습니다.',
   EMPTY_MISSION_DATES: '필요한 값(날짜)이 없습니다.',
-  BAD_DATES: '요청한 날짜 형식이 잘못되었습니다.',
   ALREADY_THREE_MISSIONS: '해당 날짜에 이미 3개의 낫투두가 있습니다.',
   ALREADY_SAME_MISSIONS: '해당 날짜에 이미 같은 낫투두가 있습니다.',
 

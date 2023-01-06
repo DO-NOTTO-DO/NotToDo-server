@@ -289,30 +289,32 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
   }
 
   // 선택 일자에 낫투두 3개 이상
-  await Promise.all(newdates.map(async (date) => {
-    const data = await getDailyMission(userId, date);
-    if (data.length >= 3) {
-      throw 4004;
-    }
-    return data;
-  }));
+  await Promise.all(
+    newdates.map(async (date) => {
+      const data = await getDailyMission(userId, date);
+      if (data.length >= 3) {
+        throw 4004;
+      }
+    }),
+  );
 
   // 이미 같은 낫투두가 존재하는 경우
-  await Promise.all(newdates.map(async (newDate) => {
-    const data = await prisma.mission.findFirst({
-      where: {
-        user_id: userId,
-        action_date: new Date(newDate),
-        goal: mission.goal,
-        not_todo_id: mission.not_todo_id,
-        situation_id: mission.situation_id,
+  await Promise.all(
+    newdates.map(async (newDate) => {
+      const data = await prisma.mission.findFirst({
+        where: {
+          user_id: userId,
+          action_date: new Date(newDate),
+          goal: mission.goal,
+          not_todo_id: mission.not_todo_id,
+          situation_id: mission.situation_id,
+        },
+      });
+      if (data) {
+        throw 4005;
       }
-    })
-    if (data) {
-      throw 4005;
-    }
-    return data;
-  }))
+    }),
+  );
 
   // 성공
   const newMissions = await Promise.all(
@@ -329,7 +331,7 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
     }),
   );
 
-  const data = await prisma.mission.createMany({
+  await prisma.mission.createMany({
     data: newMissions,
   });
 

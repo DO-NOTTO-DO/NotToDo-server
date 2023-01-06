@@ -203,7 +203,7 @@ const postMissionOtherDates = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.EMPTY_MISSION_DATES));
     } else if (error == 400) {
       // 날짜 형식이 잘못됨
-      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.BAD_DATES));
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_DATE_TYPE));
     } else if (error == 4004) {
       // 해당 날짜에 이미 3개 이상의 낫투두
       return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_THREE_MISSIONS));
@@ -212,7 +212,7 @@ const postMissionOtherDates = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_SAME_MISSIONS));
     } else if (error == 404) {
       // 해당 id에 해당하는 낫투두를 찾을 수 없음
-      return res.status(statusCode.NOT_FOUND).send(fail(statusCode.NOT_FOUND, message.MISSION_NOT_FOUNDED));
+      return res.status(statusCode.NOT_FOUND).send(fail(statusCode.NOT_FOUND, message.MISSION_NOT_FOUND));
     }
 
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
