@@ -11,6 +11,7 @@ router.get('/week/:startDate', auth, missionController.getWeeklyMissionCount);
 router.get('/recent', auth, missionController.getRecentMissions);
 router.get('/stat/notTodo', auth, missionController.getNotTodoStat);
 router.get('/stat/situation', auth, missionController.getSituationStat);
+router.post('/:missionId', auth, missionController.postMissionOtherDates);
 router.patch('/:missionId/check', auth, missionController.changeCompletionStatus);
 router.delete('/:missionId', auth, missionController.deleteMission);
 

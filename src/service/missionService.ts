@@ -225,7 +225,7 @@ const getRecentMissions = async (userId: number) => {
       return responseData;
     }),
   );
-}
+};
 
 const getSituationStat = async (userId: number) => {
   const date = new Date();
@@ -283,6 +283,68 @@ const getSituationStat = async (userId: number) => {
   return convertSnakeToCamel.keysToCamel(data);
 };
 
+const addMissionToOtherDates = async (userId: number, missionId: number, newdates: string[]) => {
+  // id에 해당하는 낫투두가 없을 때
+  const mission = await prisma.mission.findUnique({
+    where: {
+      id: missionId,
+    },
+  });
+
+  if (!mission) {
+    throw 404;
+  }
+
+  // 선택 일자에 낫투두 3개 이상
+  await Promise.all(
+    newdates.map(async (date) => {
+      const data = await getDailyMission(userId, date);
+      if (data.length >= 3) {
+        throw 4004;
+      }
+    }),
+  );
+
+  // 이미 같은 낫투두가 존재하는 경우
+  await Promise.all(
+    newdates.map(async (newDate) => {
+      const data = await prisma.mission.findFirst({
+        where: {
+          user_id: userId,
+          action_date: new Date(newDate),
+          goal: mission.goal,
+          not_todo_id: mission.not_todo_id,
+          situation_id: mission.situation_id,
+        },
+      });
+      if (data) {
+        throw 4005;
+      }
+    }),
+  );
+
+  // 성공
+  const newMissions = await Promise.all(
+    newdates.map(async (date) => {
+      const responseData = {
+        user_id: userId,
+        not_todo_id: mission.not_todo_id,
+        goal: mission.goal,
+        situation_id: mission.situation_id,
+        action_date: new Date(date),
+        completion_status: 'NOTYET',
+      };
+      return responseData;
+    }),
+  );
+
+  await prisma.mission.createMany({
+    data: newMissions,
+  });
+
+  return newdates;
+};
+
 export default {
   getMissionCount,
   getDailyMission,
@@ -292,4 +354,5 @@ export default {
   changeCompletionStatus,
   deleteMission,
   getRecentMissions,
+  addMissionToOtherDates,
 };
