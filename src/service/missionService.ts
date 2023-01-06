@@ -10,6 +10,9 @@ const getMissionCount = async (userId: number, startDate: Date, lastDate: Date) 
     by: ['action_date'],
     where: {
       user_id: userId,
+      completion_status: {
+        not: 'NOTYET',
+      },
       action_date: {
         gt: startDate,
         lte: lastDate,
@@ -40,6 +43,7 @@ const getMissionCount = async (userId: number, startDate: Date, lastDate: Date) 
 
 const getDailyMission = async (userId: number, date: string) => {
   const actionDate: Date = new Date(date);
+  
   const dailyMissions = await prisma.mission.findMany({
     where: {
       user_id: userId,
@@ -91,9 +95,12 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
     by: ['action_date'],
     where: {
       user_id: userId,
+      completion_status: {
+        not: 'NOTYET',
+      },
       action_date: {
-        gt: startDate,
-        lte: lastDate,
+        gte: startDate,
+        lt: lastDate,
       },
     },
     _count: {
