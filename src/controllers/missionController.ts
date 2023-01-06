@@ -172,6 +172,49 @@ const getSituationStat = async (req: Request, res: Response) => {
   }
 };
 
+const postMissionOtherDates = async (req: Request, res: Response) => {
+  const userId: number = req.body.userId;
+  const missionId = req.params.missionId;
+  const dates: string[] = req.body.dates;
+  
+ try {
+  if (!missionId) {
+    throw 4001
+  } 
+  
+  if (!dates) {
+    throw 4002
+  }
+    const data = await missionService.addMissionToOtherDates(userId, +missionId, dates);
+
+    return res.status(statusCode.CREATED).send(success(statusCode.CREATED, message.COPY_OTHERDATES_MISSION_SUCCESS, data));
+  } catch (error) {
+    if (error == 4001) {
+      // 필요한 값이 없습니다. (id)
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.EMPTY_MISSION_ID));
+    } else if (error == 4002) {
+      // 필요한 값이 없습니다. (날짜)
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.EMPTY_MISSION_DATES));
+    } else if (error == 4003) {
+      // 날짜 형식이 잘못됨 
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.BAD_DATES));
+    } else if (error == 4004) {
+      // 해당 날짜에 이미 3개 이상의 낫투두
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_THREE_MISSIONS));
+    } else if (error == 4005) {
+      // 해당 날짜에 이미 같은 낫투두 존재
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_SAME_MISSIONS));
+    } else if (error == 404) { 
+      // 해당 id에 해당하는 낫투두를 찾을 수 없음
+      return res.status(statusCode.NOT_FOUND).send(fail(statusCode.NOT_FOUND, message.MISSION_NOT_FOUNDED));
+    }
+
+    const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
+    sendMessageToSlack(errorMessage);
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+  }
+}
+
 export default {
   getMissionCount,
   getDailyMission,
@@ -181,4 +224,5 @@ export default {
   deleteMission,
   getRecentMissions,
   getSituationStat,
+  postMissionOtherDates,
 };
