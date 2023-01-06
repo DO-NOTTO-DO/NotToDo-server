@@ -30,6 +30,10 @@ const signIn = async (req: Request, res: Response) => {
         break;
     }
 
+    if (!data) {
+      return 0;
+    }
+
     const user = await authService.createUser(data);
     const fcm = await authService.createFCM(user.id, signInDTO.fcmToken);
 

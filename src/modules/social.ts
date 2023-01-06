@@ -20,7 +20,7 @@ const signKakaoUser = async (socialToken: string) => {
   }
 };
 
-const signAppleUser = async (appleAccessToken) => {
+const signAppleUser = async (appleAccessToken: string) => {
   try {
     const appleUser = jwt.decode(appleAccessToken);
     if (appleUser.email_verified == 'false') {
