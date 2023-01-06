@@ -290,13 +290,12 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
 
   // 선택 일자에 낫투두 3개 이상
   const dailyMissionsCounts = await Promise.all(newdates.map(async (date) => {
-    const test = await getDailyMission(userId, date);
-    return test;
+    const data = await getDailyMission(userId, date);
+    if (data.length > 3) {
+      throw 4004;
+    }
+    return data;
   }));
-
-  if ((dailyMissionsCounts.filter((item) => item.length > 0).length) > 0) {
-    throw 4004;
-  }
 
   const newMissions = await Promise.all(
     newdates.map(async (date) => {
