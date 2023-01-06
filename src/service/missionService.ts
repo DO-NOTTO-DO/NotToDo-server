@@ -298,7 +298,7 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
   }));
 
   // 이미 같은 낫투두가 존재하는 경우
-  const alreadyMission = await Promise.all(newdates.map(async (newDate) => {
+  await Promise.all(newdates.map(async (newDate) => {
     const data = await prisma.mission.findFirst({
       where: {
         user_id: userId,
