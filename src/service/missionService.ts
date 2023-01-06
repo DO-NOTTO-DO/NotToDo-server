@@ -277,18 +277,26 @@ const getSituationStat = async (userId: number) => {
 };
 
 const addMissionToOtherDates = async (userId: number, missionId: number, newdates: string[]) => {
+  // id에 해당하는 낫투두가 없을 때
   const mission = await prisma.mission.findUnique({
     where: {
       id: missionId,
     },
   });
 
-  // id에 해당하는 낫투두가 없을 때
   if (!mission) {
     throw 404;
   }
 
-  console.log(newdates);
+  // 선택 일자에 낫투두 3개 이상
+  const dailyMissionsCounts = await Promise.all(newdates.map(async (date) => {
+    const test = await getDailyMission(userId, date);
+    return test;
+  }));
+
+  if ((dailyMissionsCounts.filter((item) => item.length > 0).length) > 0) {
+    throw 4004;
+  }
 
   const newMissions = await Promise.all(
     newdates.map(async (date) => {
@@ -301,9 +309,8 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
         completion_status: 'NOTYET',
       };
       return responseData;
-    })
+    }),
   );
-
 
   const data = await prisma.mission.createMany({
     data: newMissions,
