@@ -10,8 +10,9 @@ router.get('/daily/:date', auth, missionController.getDailyMission);
 router.get('/week/:startDate', auth, missionController.getWeeklyMissionCount);
 router.get('/stat/notTodo', auth, missionController.getStatNotTodo);
 router.get('/recent', auth, missionController.getRecentMissions);
+router.get('/stat/notTodo', auth, missionController.getNotTodoStat);
+router.get('/stat/situation', auth, missionController.getSituationStat);
 router.patch('/:missionId/check', auth, missionController.changeCompletionStatus);
 router.delete('/:missionId', auth, missionController.deleteMission);
-
 
 export default router;
