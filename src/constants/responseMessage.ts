@@ -58,4 +58,7 @@ export default {
 
   // 상황
   SITUATIONS_GET_SUCCESS: '상황 불러오기 성공',
+
+  // 배너
+  READ_BANNER_SUCCESS: '배너 불러오기 성공',
 };
