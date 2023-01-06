@@ -50,6 +50,7 @@ export default {
   INVALID_COMPLETION_STATUS_TYPE: '완료 여부는 NOTYET, AMBIGUOUS, FINISH로만 가능합니다.',
   CHANGE_COMPLETION_STATUS_SUCCESS: '낫투두 완료 여부 변경 성공',
   DELETE_MISSION_SUCCESS: '낫투두 삭제 성공',
+  RECENT_MISSION_SUCCESS: '최근 사용 낫투두 기록 불러오기 성공',
 
   //통계
   READ_NOTTODO_STAT_SUCCESS: '낫투두별 통계 조회 성공',

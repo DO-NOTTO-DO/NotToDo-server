@@ -76,6 +76,23 @@ const getWeeklyMissionCount = async (req: Request, res: Response) => {
 };
 
 /**
+ *  @route GET /mission/recent
+ *  @desc Get recent mission
+ *  @access Public
+ */
+const getRecentMissions = async (req: Request, res: Response) => {
+  try {
+    const userId = req.body.userId;
+    const data = await missionService.getRecentMissions(userId);
+    return res.status(statusCode.OK).send(success(statusCode.OK, message.RECENT_MISSION_SUCCESS, data));
+  } catch(error) {
+    const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
+    sendMessageToSlack(errorMessage);
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+  }
+}
+
+/**
  *  @route PATCH /mission/:missionId/check
  *  @desc Patch mission status
  *  @access Public
@@ -162,5 +179,6 @@ export default {
   getNotTodoStat,
   changeCompletionStatus,
   deleteMission,
+  getRecentMissions,
   getSituationStat,
 };

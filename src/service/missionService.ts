@@ -191,6 +191,35 @@ const deleteMission = async (missionId: number) => {
   });
 };
 
+const getRecentMissions = async (userId: number) => {
+  const data = await prisma.mission.findMany({
+    include: {
+      not_todo: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+    where: {
+      user_id: userId,
+    },
+    orderBy: {
+      created_at: 'desc',
+    },
+    distinct: ['not_todo_id'],
+  });
+
+  return await Promise.all(
+    data.map(async (item) => {
+      const responseData = {
+        title: item.not_todo.title,
+      };
+      return responseData;
+    }),
+  );
+}
+
 const getSituationStat = async (userId: number) => {
   const date = new Date();
   const currentYear = date.getFullYear();
@@ -255,4 +284,5 @@ export default {
   getSituationStat,
   changeCompletionStatus,
   deleteMission,
+  getRecentMissions,
 };
