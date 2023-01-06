@@ -1,4 +1,4 @@
-import { ActionNameDTO } from "./actionDTO";
+import { ActionNameDTO } from './actionDTO';
 
 export interface DailyMissionDTO {
   id: number;
@@ -7,4 +7,16 @@ export interface DailyMissionDTO {
   completionStatus: string;
   goal: string | null;
   actions: ActionNameDTO[];
+}
+export interface SituationStatDTO {
+  id: number;
+  count: string | null | number;
+  name: string;
+  missions?: NotTodoStatDTO[];
+}
+
+export interface NotTodoStatDTO {
+  id: number;
+  count: string | null | number;
+  title: string;
 }
