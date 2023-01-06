@@ -163,19 +163,48 @@ const changeCompletionStatus = async (missionId: number, completionStatus: strin
     select: {
       id: true,
       completion_status: true,
-    }
+    },
   });
 
   return convertSnakeToCamel.keysToCamel(mission);
-}
+};
 
 const deleteMission = async (missionId: number) => {
   await prisma.mission.delete({
     where: {
-      id: missionId
-    }
+      id: missionId,
+    },
   });
-}
+};
+
+const getRecentMissions = async (userId: number) => {
+  const data = await prisma.mission.findMany({
+    include: {
+      not_todo: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+    where: {
+      user_id: userId,
+    },
+    orderBy: {
+      created_at: 'desc',
+    },
+    distinct: ['not_todo_id'],
+  });
+
+  return await Promise.all(
+    data.map(async (item) => {
+      const responseData = {
+        title: item.not_todo.title,
+      };
+      return responseData;
+    }),
+  );
+};
 
 export default {
   getMissionCount,
@@ -184,4 +213,5 @@ export default {
   getStatNotTodo,
   changeCompletionStatus,
   deleteMission,
+  getRecentMissions,
 };
