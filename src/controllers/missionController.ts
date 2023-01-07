@@ -246,12 +246,12 @@ const postMission = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.LIMITED_MISSION_COUNT));
     } else if (error == 4003) {
       // 해당 날짜에 이미 존재하는 낫투두
-      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_MISSION));
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_EXIST_MISSION));
     } else if (error == 400) {
       // 날짜 형식 오류
       return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_DATE_TYPE));
     } else if (error == 4005) {
-      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.LIMITED_ACTIONS_COUNT));
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.LIMITED_ACTION_COUNT));
     }
 
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);

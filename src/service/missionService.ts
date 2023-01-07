@@ -348,8 +348,14 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
 // 낫투두 추가
 const createMission = async (userId: number, newMission: MissionCreateDTO) => {
   // 선택일자에 낫투두 3개 이상 (4002)
-  const data = await getDailyMission(userId, newMission.actionDate);
-  if (data.length >= 3) {
+  const datilyMission = await prisma.mission.findMany({
+    where: {
+      user_id: userId,
+      action_date: new Date(newMission.actionDate)
+    }, 
+  })
+  
+  if (datilyMission.length >= 3) {
     throw 4002;
   }
 
