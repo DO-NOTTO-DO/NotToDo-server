@@ -147,6 +147,7 @@ const getNotTodoStat = async (userId: number) => {
     orderBy: {
       _count: { not_todo_id: 'desc' },
     },
+    take: 5,
   });
 
   const result = await Promise.all(
@@ -241,9 +242,9 @@ const getSituationStat = async (userId: number) => {
     AND action_date > ${startDate} AND action_date <= ${lastDate}
     AND (completion_status = 'FINISH' OR completion_status = 'AMBIGUOUS')
     GROUP BY situation.id
-    LIMIT 5
     `,
   );
+  console.log(situation);
   const situations: SituationStatDTO[] = [];
 
   const result = await Promise.all(
@@ -351,10 +352,10 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
   const datilyMission = await prisma.mission.findMany({
     where: {
       user_id: userId,
-      action_date: new Date(newMission.actionDate)
-    }, 
-  })
-  
+      action_date: new Date(newMission.actionDate),
+    },
+  });
+
   if (datilyMission.length >= 3) {
     throw 4002;
   }
@@ -431,15 +432,15 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
       id: true,
       situation: {
         select: {
-          name: true
-        }
-      }, 
+          name: true,
+        },
+      },
       goal: true,
       not_todo: {
         select: {
           title: true,
-        }
-      }, 
+        },
+      },
       action_date: true,
     },
   });
@@ -463,13 +464,13 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
     title: createdMission.not_todo.title,
     goal: createdMission.goal,
     situation: {
-      name: createdMission.situation?.name
-    }, 
+      name: createdMission.situation?.name,
+    },
     actions: newActions.map((item) => item.name),
-    actionDate: createdMission.action_date
-  }
+    actionDate: createdMission.action_date,
+  };
 
-  return resdata
+  return resdata;
 };
 
 export default {
