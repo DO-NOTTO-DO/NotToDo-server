@@ -242,10 +242,10 @@ const getSituationStat = async (userId: number) => {
     AND action_date > ${startDate} AND action_date <= ${lastDate}
     AND (completion_status = 'FINISH' OR completion_status = 'AMBIGUOUS')
     GROUP BY situation.id
+    ORDER BY count(*) DESC
+    LIMIT 3
     `,
   );
-  console.log(situation);
-  const situations: SituationStatDTO[] = [];
 
   const result = await Promise.all(
     situation.map(async (x) => {
@@ -254,34 +254,52 @@ const getSituationStat = async (userId: number) => {
         count: +String(x.count).replace('n', ''),
         name: x.name,
       };
+      return data;
+    }),
+  );
+  return convertSnakeToCamel.keysToCamel(result);
+};
 
-      const notTodo: NotTodoStatDTO[] = await prisma.$queryRaw(
-        Prisma.sql`
+const getMissionStat = async (userId: number, situations: SituationStatDTO[]) => {
+  const date = new Date();
+  const currentYear = date.getFullYear();
+  const startDate = new Date(currentYear, 0, 1);
+  const lastDate = new Date(currentYear, 12, 1);
+
+  const missions: SituationStatDTO[] = [];
+
+  for (const situation of situations) {
+    const notTodo: NotTodoStatDTO[] = await prisma.$queryRaw(
+      Prisma.sql`
         SELECT count(not_todo_id), title
         FROM mission, not_todo
-        WHERE user_id = ${userId} AND situation_id = ${x.id} AND mission.not_todo_id = not_todo.id
+        WHERE user_id = ${userId} AND situation_id = ${situation.id} AND mission.not_todo_id = not_todo.id
         AND action_date > ${startDate} AND action_date <= ${lastDate}
         AND (completion_status = 'FINISH' OR completion_status = 'AMBIGUOUS')
         GROUP BY not_todo.id
+        ORDER BY count(*) DESC
         LIMIT 3
         `,
-      );
-      const notTodos: NotTodoStatDTO[] = [];
-
-      for (const y of notTodo) {
-        const notTododata = {
-          id: y.id,
-          count: +String(y.count).replace('n', ''),
-          title: y.title,
+    );
+    const result = await Promise.all(
+      notTodo.map(async (x) => {
+        const data = {
+          count: +String(x.count).replace('n', ''),
+          title: x.title,
         };
-        notTodos.push(notTododata);
-      }
-      const missions = notTodos.sort((a, b) => Number(b.count) - Number(a.count));
-      situations.push({ ...data, missions });
-    }),
-  );
-  const data = situations.sort((a, b) => Number(b.count) - Number(a.count));
-  return convertSnakeToCamel.keysToCamel(data);
+        return data;
+      }),
+    );
+
+    const data: SituationStatDTO = {
+      id: situation.id,
+      count: +String(situation.count).replace('n', ''),
+      name: situation.name,
+      missions: result,
+    };
+    missions.push(data);
+  }
+  return convertSnakeToCamel.keysToCamel(missions);
 };
 
 const addMissionToOtherDates = async (userId: number, missionId: number, newdates: string[]) => {
@@ -484,4 +502,5 @@ export default {
   getRecentMissions,
   addMissionToOtherDates,
   createMission,
+  getMissionStat,
 };
