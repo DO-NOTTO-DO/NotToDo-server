@@ -95,3 +95,10 @@ model not_todo {
   title    String?   @db.VarChar(500)
   missions mission[]
 }
+
+model banner {
+  id       Int       @id(map: "banner_pk") @unique(map: "banner_id_uindex") @default(autoincrement())
+  title    String   @db.VarChar(500)
+  image    String     @db.VarChar(500)
+  banner_category String  @db.VarChar(500)
+}
