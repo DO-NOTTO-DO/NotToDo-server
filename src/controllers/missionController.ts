@@ -7,6 +7,7 @@ import missionService from '../service/missionService';
 import dateValidator from '../modules/dateValidator';
 import moment from 'moment';
 import missionValidator from '../modules/missionValidator';
+import { MissionCreateDTO } from '../DTO/missionDTO';
 
 /**
  *  @route GET /mission/daily/:date
@@ -221,6 +222,38 @@ const postMissionOtherDates = async (req: Request, res: Response) => {
   }
 };
 
+const postMission = async (req: Request, res: Response) => {
+  try {
+    const userId: number = req.body.userId;
+    const requestData: MissionCreateDTO = req.body;
+
+    if (requestData.actionDate != null || requestData.actionDate != '') {
+      await dateValidator.validateDotDate(requestData.actionDate);
+    }
+
+    const data = await missionService.createMission(userId, requestData);
+    return res.status(statusCode.CREATED).send(success(statusCode.CREATED, message.CREATE_MISSION_SUCCESS, data));
+  } catch (error) {
+    if (error == 4001) {
+      // 필요한값이 없습니다.
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+    } else if (error == 4002) {
+      // 낫투두를 하루에 3개이상 추가할 수 없음
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.LIMITED_MISSION_COUNT));
+    } else if (error == 4003) {
+      // 해당 날짜에 이미 존재하는 낫투두
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.ALREADY_MISSION));
+    } else if (error == 400) {
+      // 날짜 형식 오류
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_DATE_TYPE));
+    }
+
+    const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
+    sendMessageToSlack(errorMessage);
+    res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
+  }
+};
+
 export default {
   getMissionCount,
   getDailyMission,
@@ -231,4 +264,5 @@ export default {
   getRecentMissions,
   getSituationStat,
   postMissionOtherDates,
+  postMission,
 };
