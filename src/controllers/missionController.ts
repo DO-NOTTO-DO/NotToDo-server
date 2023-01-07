@@ -164,9 +164,12 @@ const getNotTodoStat = async (req: Request, res: Response) => {
 const getSituationStat = async (req: Request, res: Response) => {
   const userId: number = req.body.userId;
   try {
-    const notTodo = await missionService.getSituationStat(userId);
+    const situation = await missionService.getSituationStat(userId);
+    const notTodo = await missionService.getMissionStat(userId, situation);
+
     return res.status(statusCode.OK).send(success(statusCode.OK, message.READ_SITUATION_STAT_SUCCESS, notTodo));
   } catch (error) {
+    console.log(error);
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
     sendMessageToSlack(errorMessage);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
