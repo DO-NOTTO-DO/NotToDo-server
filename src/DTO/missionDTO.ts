@@ -9,14 +9,14 @@ export interface DailyMissionDTO {
   actions: ActionNameDTO[];
 }
 export interface SituationStatDTO {
-  id: number;
+  id?: number;
   count: string | null | number;
   name: string;
   missions?: NotTodoStatDTO[];
 }
 
 export interface NotTodoStatDTO {
-  id: number;
+  id?: number;
   count: string | null | number;
   title: string;
 }
