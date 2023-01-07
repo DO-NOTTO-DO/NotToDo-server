@@ -227,6 +227,10 @@ const postMission = async (req: Request, res: Response) => {
     const userId: number = req.body.userId;
     const requestData: MissionCreateDTO = req.body;
 
+    if (requestData.actions.length > 2) {
+      throw 4005
+    }
+
     if (requestData.actionDate != null || requestData.actionDate != '') {
       await dateValidator.validateDotDate(requestData.actionDate);
     }
@@ -246,6 +250,8 @@ const postMission = async (req: Request, res: Response) => {
     } else if (error == 400) {
       // 날짜 형식 오류
       return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.INVALID_DATE_TYPE));
+    } else if (error == 4005) {
+      return res.status(statusCode.BAD_REQUEST).send(fail(statusCode.BAD_REQUEST, message.LIMITED_ACTIONS_COUNT));
     }
 
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);

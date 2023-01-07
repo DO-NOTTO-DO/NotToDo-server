@@ -60,6 +60,7 @@ export default {
   CREATE_MISSION_SUCCESS: '낫투두 생성 성공',
   ALREADY_MISSION: '이미 존재하는 낫투두 입니다.',
   LIMITED_MISSION_COUNT: '낫투두를 3개 이상 추가할 수 없습니다.',
+  LIMITED_ACTIONS_COUNT: '액션은 최대 2개까지만 추가할 수 있습니다.',
 
   //통계
   READ_NOTTODO_STAT_SUCCESS: '낫투두별 통계 조회 성공',
