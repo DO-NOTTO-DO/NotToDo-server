@@ -423,6 +423,18 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
     },
     select: {
       id: true,
+      situation: {
+        select: {
+          name: true
+        }
+      }, 
+      goal: true,
+      not_todo: {
+        select: {
+          title: true,
+        }
+      }, 
+      action_date: true,
     },
   });
 
@@ -440,7 +452,18 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
     data: newActions,
   });
 
-  return newActions;
+  const resdata = {
+    id: createdMission.id,
+    title: createdMission.not_todo.title,
+    goal: createdMission.goal,
+    situation: {
+      name: createdMission.situation?.name
+    }, 
+    actions: newActions.map((item) => item.name),
+    actionDate: createdMission.action_date
+  }
+
+  return resdata
 };
 
 export default {
