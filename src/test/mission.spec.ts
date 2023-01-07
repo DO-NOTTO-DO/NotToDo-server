@@ -128,3 +128,87 @@ describe('GET /mission/week/:startDate', () => {
       });
   });
 });
+
+/**
+ * 낫투두 완료 상태 변경
+ * 201, 400, 401 케이스
+ */
+describe('PATCH /mission/:missionId/check', () => {
+  // 낫투두 완료 상태 변경 201 케이스
+  it('낫투두 완료 상태 변경 - 성공', (done) => {
+    req(app)
+      .patch(`/api/mission/${process.env.TEST_MISSION_ID}/check`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        completionStatus: 'FINISH',
+      })
+      .expect(201)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+  // 낫투두 완료 상태 변경 400 케이스
+  it('낫투두 완료 상태 변경 - 로그인한 유저의 낫투두가 아님', (done) => {
+    req(app)
+      .patch(`/api/mission/1/check`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        completionStatus: 'FINISH',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+  // 낫투두 완료 상태 변경 400 케이스
+  it('낫투두 완료 상태 변경 - 잘못된 완료 여부', (done) => {
+    req(app)
+      .patch(`/api/mission/${process.env.TEST_MISSION_ID}/check`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        completionStatus: '남지윤 바보',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+  // 낫투두 완료 상태 변경 401 케이스
+  it('낫투두 완료 상태 변경 - 유효하지 않은 토큰', (done) => {
+    req(app)
+      .patch(`/api/mission/${process.env.TEST_MISSION_ID}/check`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `Bearer process.env.TEST_TOKEN` })
+      .send({
+        completionStatus: 'FINISH',
+      })
+      .expect(401)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
+
