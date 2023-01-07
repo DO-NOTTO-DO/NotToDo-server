@@ -5,7 +5,6 @@ import { fail, success } from '../constants/response';
 import { slackMessage } from '../modules/slackMessage';
 import { sendMessageToSlack } from '../modules/slackAPI';
 import bannerService from '../service/bannerService';
-import dateValidator from '../modules/dateValidator';
 
 /**
  *  @route GET /mission/banner
