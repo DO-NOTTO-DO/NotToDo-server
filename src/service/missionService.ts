@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { DailyMissionDTO, NotTodoStatDTO, SituationStatDTO } from '../DTO/missionDTO';
+import { DailyMissionDTO, MissionCreateDTO, NotTodoStatDTO, SituationStatDTO } from '../DTO/missionDTO';
 const prisma = new PrismaClient();
 import convertSnakeToCamel from '../modules/convertSnakeToCamel';
 import moment from 'moment';
@@ -345,6 +345,133 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
   return newdates;
 };
 
+// 낫투두 추가
+const createMission = async (userId: number, newMission: MissionCreateDTO) => {
+  // 선택일자에 낫투두 3개 이상 (4002)
+  const datilyMission = await prisma.mission.findMany({
+    where: {
+      user_id: userId,
+      action_date: new Date(newMission.actionDate)
+    }, 
+  })
+  
+  if (datilyMission.length >= 3) {
+    throw 4002;
+  }
+
+  // 이미 같은 낫투두 존재 (4003)
+  // 낫투두명, 날짜, 상황, 목표가 같음
+  const alreadyData = await prisma.mission.findFirst({
+    include: {
+      situation: {
+        select: {
+          name: true,
+        },
+      },
+      not_todo: {
+        select: {
+          title: true,
+        },
+      },
+    },
+    where: {
+      not_todo: {
+        title: newMission.title,
+      },
+      situation: {
+        name: newMission.situation,
+      },
+      goal: newMission.goal,
+      user_id: userId,
+      action_date: new Date(newMission.actionDate),
+    },
+  });
+
+  if (alreadyData) {
+    throw 4003;
+  }
+
+  // 성공
+  const situationId = await prisma.situation.upsert({
+    where: {
+      name: newMission.situation,
+    },
+    update: {},
+    create: {
+      name: newMission.situation,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const title = await prisma.not_todo.upsert({
+    where: {
+      title: newMission.title,
+    },
+    update: {},
+    create: {
+      title: newMission.title,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const createdMission = await prisma.mission.create({
+    data: {
+      not_todo_id: title.id,
+      situation_id: situationId.id,
+      action_date: new Date(newMission.actionDate),
+      goal: newMission.goal,
+      user_id: userId,
+      completion_status: 'NOTYET',
+    },
+    select: {
+      id: true,
+      situation: {
+        select: {
+          name: true
+        }
+      }, 
+      goal: true,
+      not_todo: {
+        select: {
+          title: true,
+        }
+      }, 
+      action_date: true,
+    },
+  });
+
+  const newActions = await Promise.all(
+    newMission.actions.map(async (action) => {
+      const data = {
+        mission_id: createdMission.id,
+        name: action,
+      };
+      return data;
+    }),
+  );
+
+  await prisma.action.createMany({
+    data: newActions,
+  });
+
+  const resdata = {
+    id: createdMission.id,
+    title: createdMission.not_todo.title,
+    goal: createdMission.goal,
+    situation: {
+      name: createdMission.situation?.name
+    }, 
+    actions: newActions.map((item) => item.name),
+    actionDate: createdMission.action_date
+  }
+
+  return resdata
+};
+
 export default {
   getMissionCount,
   getDailyMission,
@@ -355,4 +482,5 @@ export default {
   deleteMission,
   getRecentMissions,
   addMissionToOtherDates,
+  createMission,
 };

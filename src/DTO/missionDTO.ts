@@ -20,3 +20,11 @@ export interface NotTodoStatDTO {
   count: string | null | number;
   title: string;
 }
+
+export interface MissionCreateDTO {
+  title: string;
+  situation: string;
+  actions: string[];
+  goal: string;
+  actionDate: string;
+}
