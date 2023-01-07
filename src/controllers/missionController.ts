@@ -190,13 +190,14 @@ const postMissionOtherDates = async (req: Request, res: Response) => {
       throw 4002;
     }
 
-    await Promise.all(
+    const newDates = await Promise.all(
       dates.map(async (date) => {
         await dateValidator.validateDotDate(date);
+        return date.split('.').join('-');
       }),
     );
 
-    const data = await missionService.addMissionToOtherDates(userId, +missionId, dates);
+    const data = await missionService.addMissionToOtherDates(userId, +missionId, newDates);
     return res.status(statusCode.CREATED).send(success(statusCode.CREATED, message.COPY_OTHERDATES_MISSION_SUCCESS, data));
   } catch (error) {
     if (error == 4001) {
@@ -259,7 +260,6 @@ const postMission = async (req: Request, res: Response) => {
 
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
     sendMessageToSlack(errorMessage);
-    console.log(error);
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
 };
