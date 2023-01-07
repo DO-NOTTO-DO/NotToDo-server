@@ -256,6 +256,7 @@ const postMission = async (req: Request, res: Response) => {
 
     const errorMessage: string = slackMessage(req.method.toUpperCase(), req.originalUrl, error, req.body.user?.id);
     sendMessageToSlack(errorMessage);
+    console.log(error)
     res.status(statusCode.INTERNAL_SERVER_ERROR).send(fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR));
   }
 };

@@ -380,7 +380,7 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
       action_date: new Date(newMission.actionDate),
     },
   });
-  
+
   if (alreadyData) {
     throw 4003;
   }
@@ -412,7 +412,7 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
     },
   });
 
-  const response = await prisma.mission.create({
+  const createdMission = await prisma.mission.create({
     data: {
       not_todo_id: title.id,
       situation_id: situationId.id,
@@ -421,9 +421,26 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
       user_id: userId,
       completion_status: 'NOTYET',
     },
+    select: {
+      id: true,
+    },
   });
 
-  return response;
+  const newActions = await Promise.all(
+    newMission.actions.map(async (action) => {
+      const data = {
+        mission_id: createdMission.id,
+        name: action,
+      };
+      return data;
+    }),
+  );
+
+  await prisma.action.createMany({
+    data: newActions,
+  });
+
+  return newActions;
 };
 
 export default {
