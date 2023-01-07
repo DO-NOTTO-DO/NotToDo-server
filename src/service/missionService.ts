@@ -43,7 +43,7 @@ const getMissionCount = async (userId: number, startDate: Date, lastDate: Date) 
 
 const getDailyMission = async (userId: number, date: string) => {
   const actionDate: Date = new Date(date);
-  
+
   const dailyMissions = await prisma.mission.findMany({
     where: {
       user_id: userId,
@@ -256,7 +256,7 @@ const getSituationStat = async (userId: number) => {
 
       const notTodo: NotTodoStatDTO[] = await prisma.$queryRaw(
         Prisma.sql`
-        SELECT not_todo.id, count(not_todo_id), title
+        SELECT count(not_todo_id), title
         FROM mission, not_todo
         WHERE user_id = ${userId} AND situation_id = ${x.id} AND mission.not_todo_id = not_todo.id
         AND action_date > ${startDate} AND action_date <= ${lastDate}
