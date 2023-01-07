@@ -347,14 +347,16 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
 
 // 낫투두 추가
 const createMission = async (userId: number, newMission: MissionCreateDTO) => {
+  const missionDate = new Date(newMission.actionDate.split('.').join('-'));
+
   // 선택일자에 낫투두 3개 이상 (4002)
   const datilyMission = await prisma.mission.findMany({
     where: {
       user_id: userId,
-      action_date: new Date(newMission.actionDate)
-    }, 
-  })
-  
+      action_date: missionDate,
+    },
+  });
+
   if (datilyMission.length >= 3) {
     throw 4002;
   }
@@ -383,7 +385,7 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
       },
       goal: newMission.goal,
       user_id: userId,
-      action_date: new Date(newMission.actionDate),
+      action_date: missionDate,
     },
   });
 
@@ -422,7 +424,7 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
     data: {
       not_todo_id: title.id,
       situation_id: situationId.id,
-      action_date: new Date(newMission.actionDate),
+      action_date: missionDate,
       goal: newMission.goal,
       user_id: userId,
       completion_status: 'NOTYET',
@@ -431,15 +433,15 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
       id: true,
       situation: {
         select: {
-          name: true
-        }
-      }, 
+          name: true,
+        },
+      },
       goal: true,
       not_todo: {
         select: {
           title: true,
-        }
-      }, 
+        },
+      },
       action_date: true,
     },
   });
@@ -463,13 +465,13 @@ const createMission = async (userId: number, newMission: MissionCreateDTO) => {
     title: createdMission.not_todo.title,
     goal: createdMission.goal,
     situation: {
-      name: createdMission.situation?.name
-    }, 
+      name: createdMission.situation?.name,
+    },
     actions: newActions.map((item) => item.name),
-    actionDate: createdMission.action_date
-  }
+    actionDate: createdMission.action_date,
+  };
 
-  return resdata
+  return resdata;
 };
 
 export default {
