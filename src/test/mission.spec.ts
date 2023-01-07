@@ -212,3 +212,57 @@ describe('PATCH /mission/:missionId/check', () => {
   });
 });
 
+/**
+ * 낫투두 삭제
+ * 201, 400, 401 케이스
+ */
+describe('DELETE /mission/:missionId', () => {
+  // 낫투두 삭제 200 케이스
+  it('낫투두 삭제 - 성공', (done) => {
+    req(app)
+      .delete(`/api/mission/${process.env.TEST_MISSION_ID}`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+  // 낫투두 삭제 400 케이스
+  it('낫투두 삭제 - 로그인한 유저의 낫투두가 아님', (done) => {
+    req(app)
+      .delete(`/api/mission/1`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+  // 낫투두 삭제 401 케이스
+  it('낫투두 삭제 - 유효하지 않은 토큰', (done) => {
+    req(app)
+      .delete(`/api/mission/${process.env.TEST_MISSION_ID}`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `Bearer process.env.TEST_TOKEN` })
+      .expect(401)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
