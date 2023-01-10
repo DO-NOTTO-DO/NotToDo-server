@@ -266,3 +266,26 @@ describe('DELETE /mission/:missionId', () => {
       });
   });
 });
+
+/**
+ * 월별조회
+ * 200 케이스
+ */
+describe('GET /mission/month/:month', () => {
+  // 월별 조회 200 케이스
+  it('월별 조회 - 성공', (done) => {
+    req(app)
+      .get('/api/mission/month/:month')
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
