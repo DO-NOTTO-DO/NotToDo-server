@@ -3,6 +3,143 @@ import dotenv from 'dotenv';
 import req from 'supertest';
 dotenv.config();
 
+describe('POST /mission', () => {
+  // 낫투두 추가 201
+  it('낫투두 추가 - 성공', (done) => {
+    req(app)
+      .post(`/api/mission`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        title: '낫투두 추가 테스트',
+        situation: 'zzzzzzzz',
+        actionDate: '2035.01.12',
+        actions: ['zz'],
+        goal: 'zzzzzz',
+      })
+      .expect(201)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  // 400
+  it('낫투두 추가 - 날짜형식 오류', (done) => {
+    req(app)
+      .post(`/api/mission`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        title: '낫투두 추가',
+        situation: 'zzzzzzzz',
+        actionDate: '2032-01.28',
+        actions: ['zz'],
+        goal: 'zzzzzz',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  it('낫투두 추가 - 이미 존재', (done) => {
+    req(app)
+      .post(`/api/mission`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        title: '낫투두 추가',
+        situation: 'zzzzzzzz',
+        actionDate: '2032.01.28',
+        actions: ['zz'],
+        goal: 'zzzzzz',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  it('낫투두 추가 - 액션 2개 이상', (done) => {
+    req(app)
+      .post(`/api/mission`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        title: '낫투두 추가',
+        situation: 'zzzzzzzz',
+        actionDate: '2032-01.28',
+        actions: ['zz', '액션2', '액션3'],
+        goal: 'zzzzzz',
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  it('낫투두 추가 - 값없음', (done) => {
+    req(app)
+      .post(`/api/mission`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({})
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  // 낫투두 추가 401
+  it('낫투두 추가 - 유효하지 않은 토큰', (done) => {
+    req(app)
+      .post('/api/mission')
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: 'zz' })
+      .send({
+        title: '낫투두 추가',
+        situation: 'zzzzzzzz',
+        actionDate: '2032-01.28',
+        actions: ['zz'],
+        goal: 'zzzzzz',
+      })
+      .expect(401)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
+
 describe('POST /mission/:missionId', () => {
   // 낫투두를 다른 날짜에도 추가 201
   it('낫투두를 다른 날짜에도 추가 - 성공', (done) => {
