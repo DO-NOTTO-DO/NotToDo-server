@@ -3,6 +3,82 @@ import dotenv from 'dotenv';
 import req from 'supertest';
 dotenv.config();
 
+describe('POST /mission/:missionId', () => {
+  // 낫투두를 다른 날짜에도 추가 201
+  it('낫투두를 다른 날짜에도 추가 - 성공', (done) => {
+    req(app)
+      .post(`/api/mission/${process.env.TEST_MISSION_ID}`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        dates: ['2022.05.06', '2034.05.27'],
+      })
+      .expect(201)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  // 400
+  it('낫투두를 다른 날짜에도 추가 - 날짜형식 오류', (done) => {
+    req(app)
+      .post(`/api/mission/${process.env.TEST_MISSION_ID}`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({
+        dates: ['2022-05-06', '2034-05.27'],
+      })
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  it('낫투두를 다른 날짜에도 추가 - 값없음', (done) => {
+    req(app)
+      .post(`/api/mission/${process.env.TEST_MISSION_ID}`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .send({})
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+
+  // 낫투두를 다른 날짜에도 추가 401
+  it('낫투두를 다른 날짜에도 추가 - 유효하지 않은 토큰', (done) => {
+    req(app)
+      .post(`/api/mission/${process.env.TEST_MISSION_ID}`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `Bearer process.env.TEST_TOKEN` })
+      .expect(401)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
+
 /**
  * 일일 낫투두 조회
  * 200, 400, 401 케이스
@@ -266,7 +342,6 @@ describe('DELETE /mission/:missionId', () => {
       });
   });
 });
-
 
 describe('GET /mission/recent', () => {
   // 낫투두 최근기록 조회 200
