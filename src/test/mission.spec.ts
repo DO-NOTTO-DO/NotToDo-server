@@ -275,7 +275,7 @@ describe('GET /mission/month/:month', () => {
   // 월별 조회 200 케이스
   it('월별 조회 - 성공', (done) => {
     req(app)
-      .get(`/api/mission/month/${2023-01}`)
+      .get(`/api/mission/month/2023-01`)
       .set('Content-Type', 'application/json')
       .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
       .expect(200)
@@ -288,8 +288,22 @@ describe('GET /mission/month/:month', () => {
         done(err);
       });
   });
+  it('월별 조회 - 유효하지 않은 토큰', (done) => {
+    req(app)
+      .get(`/api/mission/month/2023-01`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `Bearer process.env.TEST_TOKEN` })
+      .expect(401)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
 });
-
 
 /**
  * 낫투두 통계
@@ -303,6 +317,21 @@ describe('GET /mission/stat/notTodo', () => {
       .set('Content-Type', 'application/json')
       .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
       .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+  it('낫투두 통계 조회 - 유효하지 않은 토큰', (done) => {
+    req(app)
+      .get('/api/mission/stat/notTodo')
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `Bearer process.env.TEST_TOKEN` })
+      .expect(401)
       .expect('Content-Type', /json/)
       .then((res) => {
         done();
@@ -326,6 +355,21 @@ describe('GET /mission/stat/situation', () => {
       .set('Content-Type', 'application/json')
       .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
       .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+  it('상황별 통계 조회 - 유효하지 않은 토큰', (done) => {
+    req(app)
+      .get('/api/mission/stat/situation')
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `Bearer process.env.TEST_TOKEN` })
+      .expect(401)
       .expect('Content-Type', /json/)
       .then((res) => {
         done();
