@@ -266,3 +266,73 @@ describe('DELETE /mission/:missionId', () => {
       });
   });
 });
+
+/**
+ * 월별조회
+ * 200 케이스
+ */
+describe('GET /mission/month/:month', () => {
+  // 월별 조회 200 케이스
+  it('월별 조회 - 성공', (done) => {
+    req(app)
+      .get(`/api/mission/month/${2023-01}`)
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
+
+
+/**
+ * 낫투두 통계
+ * 200 케이스
+ */
+describe('GET /mission/stat/notTodo', () => {
+  // 낫투두 통계 200 케이스
+  it('낫투두 통계 조회 - 성공', (done) => {
+    req(app)
+      .get('/api/mission/stat/notTodo')
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
+
+/**
+ * 상황별 통계
+ * 200 케이스
+ */
+describe('GET /mission/stat/situation', () => {
+  // 상황별 통계 200 케이스
+  it('상황별 통계 조회 - 성공', (done) => {
+    req(app)
+      .get('/api/mission/stat/situation')
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: `${process.env.TEST_ACCESS_TOKEN}` })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then((res) => {
+        done();
+      })
+      .catch((err) => {
+        console.error('######Error >>', err);
+        done(err);
+      });
+  });
+});
