@@ -81,9 +81,13 @@
 
 ## 팀별 역할분담
 
-<img width="929" alt="image" src="https://user-images.githubusercontent.com/68391767/210395059-74cfc3a2-b56e-4b47-ad81-44f920a76c84.png">
+<img width="826" alt="image" src="https://user-images.githubusercontent.com/68391767/211846690-bbae6acf-9324-4165-b183-9be39e834413.png">
 
-+ 박정훈: AWS 세팅, 남지윤: 프로젝트 세팅, 김혜수: Git 세팅
+박정훈: AWS 세팅
+
+남지윤: 프로젝트 세팅
+
+김혜수: Git 세팅
 
 ## Commit, coding convention, branch 전략
 
