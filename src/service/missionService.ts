@@ -71,14 +71,14 @@ const getDailyMission = async (userId: number, date: string) => {
     },
     orderBy: {
       created_at: 'asc',
-    }
+    },
   });
   let count = 0;
-  const missions = await Promise.all(
+  const data = await Promise.all(
     dailyMissions.map(async (dailyMission) => {
-      if (dailyMission.completion_status === "FINISH") {
+      if (dailyMission.completion_status === 'FINISH') {
         count += 1;
-      } else if (dailyMission.completion_status === "AMBIGUOUS") {
+      } else if (dailyMission.completion_status === 'AMBIGUOUS') {
         count += 0.5;
       }
       const result: DailyMissionDTO = {
@@ -93,10 +93,6 @@ const getDailyMission = async (userId: number, date: string) => {
     }),
   );
 
-  const data = {
-    missions: missions,
-    percentage: count / missions.length
-  }
   return data;
 };
 
@@ -104,37 +100,60 @@ const getWeeklyMissionCount = async (userId: number, date: string) => {
   const startDate: Date = new Date(date);
   const lastDate: Date = new Date(startDate);
   lastDate.setDate(lastDate.getDate() + 7);
-  const count = await prisma.mission.groupBy({
-    by: ['action_date'],
+  const missions = await prisma.mission.findMany({
     where: {
       user_id: userId,
-      completion_status: {
-        not: 'NOTYET',
-      },
       action_date: {
         gte: startDate,
         lt: lastDate,
       },
     },
-    _count: {
+    select: {
       action_date: true,
+      completion_status: true,
     },
     orderBy: {
       action_date: 'asc',
     },
   });
 
-  const data = await Promise.all(
-    count.map(async (x) => {
-      let date = moment(x.action_date).format('YYYY-MM-DD');
+  let data: { actionDate: string; percentage: number; }[] = [];
+  if (missions.length === 0) {
+    return data;
+  }
+  let missionDate = missions[0].action_date;
+  let point = 0;
+  let missionCount = 0;
+  for (var i in missions) {
+    if (missionDate.toDateString() != missions[i].action_date.toDateString()) {
+      let date = moment(missionDate).format('YYYY-MM-DD');
       date = date.split('-').join('.');
       const result = {
         actionDate: date,
-        count: x._count.action_date,
+        percentage: point / missionCount,
       };
-      return result;
-    }),
-  );
+      missionDate = missions[i].action_date;
+      point = 0;
+      missionCount = 0;
+      data.push(result);
+    }
+    missionCount += 1;
+    if (missions[i].completion_status === 'FINISH') {
+      point += 1;
+    } else if (missions[i].completion_status === 'AMBIGUOUS') {
+      point += 0.5;
+    }
+
+    if (missions.length === parseInt(i) + 1) {
+      let date = moment(missionDate).format('YYYY-MM-DD');
+      date = date.split('-').join('.');
+      const result = {
+        actionDate: date,
+        percentage: point / missionCount,
+      };
+      data.push(result);
+    }
+  }
   return data;
 };
 
