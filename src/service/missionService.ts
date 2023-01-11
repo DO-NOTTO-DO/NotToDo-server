@@ -73,9 +73,14 @@ const getDailyMission = async (userId: number, date: string) => {
       created_at: 'asc',
     }
   });
-
-  const data = await Promise.all(
+  let count = 0;
+  const missions = await Promise.all(
     dailyMissions.map(async (dailyMission) => {
+      if (dailyMission.completion_status === "FINISH") {
+        count += 1;
+      } else if (dailyMission.completion_status === "AMBIGUOUS") {
+        count += 0.5;
+      }
       const result: DailyMissionDTO = {
         id: dailyMission.id,
         title: dailyMission.not_todo.title,
@@ -87,6 +92,11 @@ const getDailyMission = async (userId: number, date: string) => {
       return result;
     }),
   );
+
+  const data = {
+    missions: missions,
+    percentage: count / missions.length
+  }
   return data;
 };
 
