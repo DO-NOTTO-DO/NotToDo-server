@@ -69,6 +69,9 @@ const getDailyMission = async (userId: number, date: string) => {
         },
       },
     },
+    orderBy: {
+      created_at: 'asc',
+    }
   });
 
   const data = await Promise.all(
