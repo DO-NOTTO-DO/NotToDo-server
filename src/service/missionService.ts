@@ -389,10 +389,44 @@ const addMissionToOtherDates = async (userId: number, missionId: number, newdate
     }),
   );
 
-  await prisma.mission.createMany({
-    data: newMissions,
-  });
+  const newMissionIds = await Promise.all(
+    newMissions.map(async (mission) => {
+      const res = await prisma.mission.create({
+        data: mission,
+        select: {
+          id: true
+        }
+      })
+      return res
+    })
+  )
 
+  // 원래 낫투두 id로 되어있던 액션들을 복사해서 새로운 아이디를 넣어주기
+  const newActions = await prisma.action.findMany({
+    where: {
+      mission_id: mission.id
+    },
+    select: {
+      name: true
+    }
+  })
+  console.log(newMissionIds)
+  console.log(newActions)
+
+  const createdNewActions = newActions.map ((action) => {
+    return newMissionIds.map((missionId) => {
+      const responseData = {
+        mission_id: missionId.id,
+        name: action.name
+      }
+      return responseData
+    })
+  })
+
+  await prisma.action.createMany({
+    data: createdNewActions.flat()
+  })
+  
   return newdates;
 };
 
